@@ -1,0 +1,7 @@
+.popup__square_preview {
+  padding: 0;
+  background: transparent;
+  max-height: 75vw;
+  max-width: 75vw;
+  width: auto;
+}

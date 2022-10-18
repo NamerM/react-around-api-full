@@ -1,0 +1,63 @@
+.profile__image {
+  position: relative;
+  margin: 3.75px 26.25px 3.75px 0px;
+  border-radius: 50%;
+  width: 120px;
+  height: 120px;
+  /* background-image: url(../../../images/image.jpg);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover; */
+}
+
+
+.profile__image::before {
+  position: absolute;
+  top: 0;
+  left:0;
+  z-index: 1;
+  background-color: black;
+  background-size: cover;
+  width: 100%;
+  height: 100%;
+  opacity: 0.4;
+  transition: opacity 0.3s linear;
+}
+
+.profile__image:hover::before {
+  content: url(../../../images/Vector-pen-avatar.png);
+  opacity: 0.8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  }
+
+
+.profile__imagecontent {
+  margin: 0px 26.25px 3.75px 0px;
+  border-radius: 50%;
+  width: 120px;
+  height: 120px;
+}
+
+
+@media screen and (max-width: 720px) {
+  .profile__image {
+    margin: 0px auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 50%;
+    height: 120px;
+  }
+
+}
+
+@media screen and (max-width: 320px) {
+  .profile__image {
+    margin: 0px auto 26.25px;
+    display: flex;
+    justify-content: center;
+  }
+
+}

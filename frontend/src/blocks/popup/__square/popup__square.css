@@ -1,0 +1,16 @@
+.popup__square {
+  width: 430px;
+  background-color: white;
+  color: #000000;
+  box-shadow: 0px 0px 25px rgba(0, 0, 0, 0.15);
+  border-radius: 10px;
+  position: relative;
+  display: flex;
+  justify-items: center;
+}
+
+@media screen and (max-width: 524px) {
+  .popup__square {
+    width: 282px;
+  }
+}

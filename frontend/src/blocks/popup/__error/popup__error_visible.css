@@ -1,0 +1,8 @@
+.popup__error_visible {
+  border-bottom: 1px solid #FF0000;
+  /*border-top: 0;
+    border-left: 0;
+    border-right: 0;*/
+
+}
+
