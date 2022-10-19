@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const { NODE_ENV, JWT_SECRET } = process.env;
+require('dotenv').config();
 
 const errorAuth = (res) => {
   res.status(401).send({ message: 'Authorization Required'});
@@ -16,6 +17,8 @@ const token = authorization.replace('Bearer ', '');
 let payload;
 
 try {
+  // console.log('token', token);
+  // console.log('secret', JWT_SECRET);
   payload = jwt.verify(token, JWT_SECRET );
 } catch (err) {
   return errorAuth(res);

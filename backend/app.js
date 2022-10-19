@@ -1,4 +1,3 @@
-
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
@@ -28,10 +27,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors(allowedCors));
 
-
-
 app.post('/signin', login);
 app.post('/signup', createUser);
+
 app.use(auth);
 app.use('/', router);
 

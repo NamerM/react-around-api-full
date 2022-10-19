@@ -32,6 +32,9 @@ function App() {
   const [isInfoToolTipOpen, setIsInfoToolTipOpen] = useState(false);
   const [tooltipStatus, setTooltipStatus] = useState('');
 
+  //use Effect  for isLoggedIn P15
+
+  // P14
   const onLogin = ({ email, password }) => {
     auth.signin(email, password)
       .then((res) => { //{ data: { _id, email } }
@@ -43,6 +46,10 @@ function App() {
         } else {
           setTooltipStatus('fail');
           setIsInfoToolTipOpen(true);
+          setTimeout(() => {
+            history.push("/signup");
+            setIsInfoToolTipOpen(false);
+          }, 3000);
         }
       })
       .catch((err)=> {
@@ -90,7 +97,7 @@ function App() {
         })
         .finally(() => setIsCheckingToken(false))
     }
-  }, [])
+  }, [history])
 
    const handleSignOut = () => {
     setIsLoggedIn(false);
