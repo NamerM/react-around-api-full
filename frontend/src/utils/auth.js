@@ -1,13 +1,12 @@
-let node_env = 'production';
-
-export const BASE_URL = "http://localhost:3001";
+// let node_env = 'production';
+export const BASE_URL = "http://localhost:3000";
 
 //  "https://mnamer.students.nomoredomainssbs.ru"
 //  "http://localhost:3001";
 
 const checkFetch = (url, headers) => {
   return fetch(url, headers).then((res) =>
-  res.ok ? res.json() : Promise.reject(res.StatusText)
+    res.ok ? res.json() : Promise.reject(res.StatusText)
   )
 }
 
@@ -20,17 +19,9 @@ export const signup = (email, password) => {  //register yerine signup var
     },
     body: JSON.stringify({ email, password }),
   })
-    // .then((response) => {
-    //   if (response.status === 201) {
-    //     return response.json();
-    //   }
-    //   if (response.status === 400) {
-    //     throw new Error('Missing information in one or more fields');
-    //   }
-    // })
  };
 
-export const signin = (email, password) => {   // login yerine signin
+export const signin = (email, password) => {
   return checkFetch(`${BASE_URL}/signin`, {
     method: "POST",
     headers: {
@@ -39,27 +30,15 @@ export const signin = (email, password) => {   // login yerine signin
     },
     body: JSON.stringify({ email, password }),
   })
-  // .then((response) => {
-  //   if (response.status === 200) {
-  //     return response.json();
-  //   }
-  //   if (response.status === 400) {
-  //     throw new Error('Missing information in one or more fields');
-  //   }
-  //   if (response.status === 401) {
-  //     throw new Error('The user with the specified email has not found');
-  //   }
-  // })
-    .then((data) => {
-      if(data) {
-          localStorage.setItem("token", data.token);   //"token" = "jwt"
-          localStorage.setItem("email", email);
-          return data;
-        } else {
-          return
-        }
-      })
-
+    // .then((data) => {
+    //   if(data) {
+    //       localStorage.setItem("token", data.token);   //"token" = "jwt"
+    //       localStorage.setItem("email", email);
+    //       return data;
+    //     } else {
+    //       return
+    //     }
+    //   })
 }
 
 export const checkToken = (token) => {
@@ -71,16 +50,5 @@ export const checkToken = (token) => {
       Authorization: `Bearer ${token}`  //${localStorage.getItem(token)}
     },
   })
-  // .then((response) => {
-  //   if (response.status === 200 || response.status === 201) {
-  //     return response.json();
-  //   }
-  //   if (response.status === 400) {
-  //     throw new Error ('Token is missing or provided in wrong Format')
-  //   }
-  // })
-  // .then((res) => {
-  //   return res;
-  // })
 }
 

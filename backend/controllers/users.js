@@ -1,5 +1,6 @@
 const User = require('../models/user');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 const { NODE_ENV, JWT_SECRET } = process.env;
 
 
@@ -38,21 +39,21 @@ const getUser = (req, res) => {
 const login = (req, res, next) => {
   const { email, password } = req.body;
   return User.findUserByCredentials(email, password)
-  .then((user) => {
-    const token = jwt.sign(
-      { _id: user._id},
-      NODE_ENV === 'production' ? JWT_SECRET : 'Secret of Narnia',  //in build part just JWT_SECRET
-      { expiresIn: '7d'}
-      );
-    res.send({ data: user.toJSON(), token })    // res.status(200).send(token);
-  })
-  .catch((err) => {
-    if (err.status === 401) {
-      res.status(401).send({ message: 'Incorrect email or password, please check and try again'});  //new UnauthorizedError //next(new Error('Login information is incorrect, check either email or password'));
-    } else {
-      next(err);
-    }
-  })
+    .then((user) => {
+      const token = jwt.sign(
+        { _id: user._id},
+        JWT_SECRET,
+        { expiresIn: '7d'}
+        );
+      res.send({ data: user.toJSON(), token })    // res.status(200).send(token);
+    })
+    .catch((err) => {
+      if (err.status === 401) {
+        res.status(401).send({ message: 'Incorrect email or password, please check and try again'});  //new UnauthorizedError //next(new Error('Login information is incorrect, check either email or password'));
+      } else {
+        next(err);
+      }
+    })
 }
 
 

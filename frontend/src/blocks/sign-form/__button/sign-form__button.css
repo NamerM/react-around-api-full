@@ -1,6 +1,7 @@
 .sign-form__button {
   margin-top: 186px;
   height: 50px;
+  width: 100%;
 }
 
 .sign-form__button:hover {
