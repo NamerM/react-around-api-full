@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Around the U.S. Back End  
   
 ## SPRINT 12 PROJECT LOG
@@ -44,6 +43,3 @@ All other directories are optional and may be created by the developer if necess
 
 
 
-=======
-README FILE
->>>>>>> aaf3cb105272089cb09e1ca60835e79af475038a

@@ -46,9 +46,12 @@ const login = (req, res, next) => {
       );
     res.send({ data: user.toJSON(), token })    // res.status(200).send(token);
   })
-  .catch(() => {
-    res.status(401).send({ message: 'Incorrect email or password, please check and try again'});  //new UnauthorizedError //next(new Error('Login information is incorrect, check either email or password'));
-    next();
+  .catch((err) => {
+    if (err.status === 401) {
+      res.status(401).send({ message: 'Incorrect email or password, please check and try again'});  //new UnauthorizedError //next(new Error('Login information is incorrect, check either email or password'));
+    } else {
+      next(err);
+    }
   })
 }
 
@@ -70,11 +73,12 @@ const createUser = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         res.status(400).send({ message: 'Bad Request' });//next(new BadRequestError(`${Object.values(err.errors).map((error) => error.message).join(', ')}`));
+      } else if(err.status === 500) {
+        res.status(500).send({ message: 'Internal Server Error ...' });
       } else {
-        next(err);//res.status(500).send({ message: 'Internal Server Error ...' });
+        next(err);
       }
     });
-
 };
 
 

@@ -22,17 +22,9 @@ const { router } = require('./routes');
 
 app.post('/signin', login);
 app.post('/signup', createUser);
-
 app.use(auth);
-app.use('/', router);
-
-
-app.use((req, res, next) => {
-  req.user = {
-    _id: '631f220c1e56c98bfdc2f492',
-  };
-  next();
-});
+app.use('/', auth, userRouter);
+app.use('/', auth, cardRouter);
 
 app.all('*', (req, res) => {
   res.status(404).send({ message: 'Requested resource not found' });
@@ -41,3 +33,13 @@ app.all('*', (req, res) => {
 app.listen(PORT, () => {
   console.log(`App is available  on port  ${PORT}...`);
 });
+
+
+
+// not needed
+// app.use((req, res, next) => {
+//   req.user = {
+//     _id: '631f220c1e56c98bfdc2f492',
+//   };
+//   next();
+// });

@@ -6,7 +6,7 @@ const getAllCards = (req, res) => {
     .catch(() => res.status(500).send({ message: 'An error has occured, server side' }));
 };
 
-const createCard = (req, res) => {
+const createCard = (req, res, next) => {
   const { name, likes, link } = req.body;
 
   const owner = req.user._id;
@@ -18,34 +18,45 @@ const createCard = (req, res) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         res.status(400).send({ message: 'Bad Request, Invalid data format' });
-      } else {
+      } else if (err.status === 500) {
         res.status(500).send({ message: 'Internal Server Error ...' });
+      } else {
+        next(err);
       }
     });
 };
 
-const deleteCard = (req, res) => {
+const deleteCard = (req, res, next) => {
   const { cardId } = req.params;
-  Card.findByIdAndRemove(cardId)
+  Card.findById(cardId)
     .orFail(() => {
       const error = new Error('Card not found');
       error.status = 404;
-
       throw error;
     })
-    .then((card) => res.status(200).send({ message: 'Card successfully removed', data: card }))
+    .then((card) => {
+      if(!card.owner.equals(req.user._id)) {
+        res.status(401).send({ message: 'This is not your card to delete!'});
+      } else {
+        Card.deleteOne(card)
+          .then(() => res.send({data: card}));
+      }
+    })
+    // .then((card) => res.status(200).send({ message: 'Card successfully removed', data: card }))
     .catch((err) => {
       if (err.name === 'CastError') {
         res.status(400).send({ message: 'Bad Request, Invalid data format' });
       } else if (err.status === 404) {
         res.status(404).send({ message: err.message });
-      } else {
+      } else if (err.status === 500) {
         res.status(500).send({ message: 'Internal Server Error ...' });
+      } else {
+        next(err);
       }
     });
 };
 
-const updateLikes = (req, res, operator) => {
+const updateLikes = (req, res, operator, next) => {
   const { cardId } = req.params;
   const userId = req.user._id;
 
@@ -66,15 +77,17 @@ const updateLikes = (req, res, operator) => {
         res.status(400).send({ message: 'Card Id is not correct' });
       } else if (err.status === 404) {
         res.status(404).send({ message: err.message });
-      } else {
+      } else if (err.status === 500) {
         res.status(500).send({ message: 'Ooopsss Mulder something went wrong...' });
+      } else {
+        next(err);
       }
     });
 };
 
-const likeCard = (req, res) => updateLikes(req, res, '$addToSet');
+const likeCard = (req, res, next) => updateLikes(req, res, next, '$addToSet');
 
-const dislikeCard = (req, res) => updateLikes(req, res, '$pull');
+const dislikeCard = (req, res, next) => updateLikes(req, res, next, '$pull');
 
 module.exports = {
   getAllCards,
