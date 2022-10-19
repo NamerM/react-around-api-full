@@ -8,12 +8,21 @@ const auth = require('./middleware/auth');
 require('dotenv').config();
 console.log(process.env.NODE_ENV);
 
+const allowedCors = {
+  origin: [
+    'http://localhost:3000',
+    'http://localhost:3001',
+    'https://mnamer.students.nomoredomainssbs.ru',
+  ]
+}
+
+
 const app = express();
 
 app.use(helmet());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors());
+app.use(cors(allowedCors));
 
 mongoose.connect('mongodb://localhost:27017/aroundb');
 
