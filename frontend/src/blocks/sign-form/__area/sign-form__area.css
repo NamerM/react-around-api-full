@@ -1,5 +1,6 @@
 .sign-form__area {
   display: flex;
   flex-direction: column;
+  align-items: center;
   width: 358px;
 }

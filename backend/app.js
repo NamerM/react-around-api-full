@@ -27,14 +27,13 @@ app.use(helmet());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors(allowedCors));
-app.use('/', router);
+
 
 
 app.post('/signin', login);
 app.post('/signup', createUser);
 app.use(auth);
-app.use('/', auth, userRouter);
-app.use('/', auth, cardRouter);
+app.use('/', router);
 
 
 app.all('*', (req, res) => {

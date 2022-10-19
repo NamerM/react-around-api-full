@@ -1,9 +1,9 @@
 let node_env = 'production';
 
-export const BASE_URL =
-  node_env === 'production'
-? "https://mnamer.students.nomoredomainssbs.ru"
-: "http://localhost:3000";
+export const BASE_URL = "http://localhost:3001";
+
+//  "https://mnamer.students.nomoredomainssbs.ru"
+//  "http://localhost:3001";
 
 const checkFetch = (url, headers) => {
   return fetch(url, headers).then((res) =>

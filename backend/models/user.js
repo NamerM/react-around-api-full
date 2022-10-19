@@ -42,16 +42,8 @@ const userSchema = new mongoose.Schema({
   password: {
     type: String,
     required: true,
-    minlength: [6,'The Minimum length of password is 6'],
-    maxlength: [10, 'maximum length of the password not exceed 10 characters'],
     select: false,
-    validate: {
-      validator(v) {
-        return PASS_REGEXP.text(v);
-      },
-      message: 'Enter a Valid password',
-    },
-   },  // { versionKey: false }
+   },
 
 });
 
