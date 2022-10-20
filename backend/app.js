@@ -7,6 +7,7 @@ const auth = require('./middleware/auth');
 require('dotenv').config();
 console.log(process.env.NODE_ENV);
 
+
 const allowedCors = {
   origin: [
     'http://localhost:3000',

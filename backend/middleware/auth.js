@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 const { JWT_SECRET } = process.env;
-require('dotenv').config();
+
 
 const errorAuth = (res) => {
   res.status(401).send({ message: 'Authorization Required'});
@@ -23,7 +23,7 @@ try {
 }
 
 req.user = payload;
-next();
+return next();
 }
 
 module.exports = auth;

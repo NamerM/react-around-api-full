@@ -17,6 +17,7 @@ class Api {
   }
 
   editProfile = (name, about) => {
+    console.log(name, about)
     return fetch(this._baseUrl + '/users/me', {
       method: "PATCH",
       headers: this._headers,
@@ -29,6 +30,7 @@ class Api {
   }
 
   editAvatar(avatar) {
+    console.log(avatar);
     return fetch(this._baseUrl + '/users/me/avatar', {
       method: "PATCH",
       headers: this._headers,
@@ -49,6 +51,7 @@ class Api {
   } //name  & link in the body check m.
 
   addCard(name, link,) {
+    console.log(name, link);
     return fetch(this._baseUrl + '/cards', {
       method: "POST",
       headers: this._headers,
@@ -95,9 +98,9 @@ class Api {
 }
 
 const api = new Api({
-  address: "http://localhost:3001",
+  baseUrl: "http://localhost:3001",
   headers: {
-    authorization: `Bearer ${localStorage.getItem('token') }`,
+    authorization: `Bearer ${localStorage.getItem('jwt') }`,
     "Content-Type": "application/json"
   }
 })

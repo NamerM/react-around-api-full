@@ -31,107 +31,113 @@ function App() {
   const [isCheckingToken, setIsCheckingToken] = useState(true);
   const [isInfoToolTipOpen, setIsInfoToolTipOpen] = useState(false);
   const [tooltipStatus, setTooltipStatus] = useState('');
+  //P15
+  const [token, setToken] = useState(localStorage.getItem("jwt"));
 
-  //use Effect  for isLoggedIn P15
-
-  // P14
-  const onLogin = ({ email, password }) => {
-    auth.signin(email, password)
-      .then((res) => { //{ data: { _id, email } }
-        if(res) {
-          setIsLoggedIn(true);
-          setUserData({ email });
-          localStorage.setItem('token', res.token);
-          history.push('/main');
-        } else {
-          setTooltipStatus('fail');
-          setIsInfoToolTipOpen(true);
-          setTimeout(() => {
-            history.push("/signup");
-            setIsInfoToolTipOpen(false);
-          }, 3000);
-        }
-      })
-      .catch((err)=> {
-        // console.log("err =>", err);
-        setTooltipStatus('fail');
-        setIsInfoToolTipOpen(true);
-      })
-  }
-
-  const onRegisterUser = ({ email, password }) => {
-    auth.signup(email, password)
-      .then((res) => {
-        if(res) {  //res.data._id
-          setTooltipStatus('success');
-          history.push('/signin')
-        } else {
-          setTooltipStatus('fail');
-        }
-      })
-      .catch((err) => {
-        // console.log("err =>", err);
-        setTooltipStatus('fail');
-      })
-      .finally(() => setIsInfoToolTipOpen(true))
-  }
-
+ //p11
   useEffect(() => {
-    const token = localStorage.getItem('token')
-    if(token) {
-      auth
-        .checkToken(token)
-        .then((res) => {
-          if(res) {
-            setUserData({ email: res.data.email})
-            setIsLoggedIn(true);
-            setIsCheckingToken(false)
-            history.push('/');
-          } else {
-            localStorage.removeItem('token');
-          }
-        })
-        .catch((err) => {
-          // console.log("err =>", err)
-          history.push('/signin')
-        })
-        .finally(() => setIsCheckingToken(false))
-    }
-  }, [history])
-
-   const handleSignOut = () => {
-    setIsLoggedIn(false);
-    localStorage.removeItem('token');
-    history.push('/signin');
-  }
-
-
-//**p11 parts */
-  useEffect(() => {
-    api.getUserInfo()
+    if (token && isLoggedIn) {
+      api.getUserInfo(token)
       .then( res => {  // { data: { name, avatar, about, _id}}
         setCurrentUser(res);
       })
       .catch(console.log);
-    api.getInitialCards()
+    api.getInitialCards(token)
       .then( res => {
         setCards(res);
       })
       .catch(console.log);
-    }, [])
+    }
+    }, [token, isLoggedIn])
 
+  //P14 check token
   useEffect(() => {
-      const closeByEscape = (e) => {
-        if (e.key === 'Escape') {
-          closeAllPopups();
-        }
-      }
-
-      document.addEventListener('keydown', closeByEscape)
-
-      return () => document.removeEventListener('keydown', closeByEscape)
+    const token = localStorage.getItem('jwt')
+    if(token) {
+      auth
+        .checkToken(token)
+        .then((res) => {
+          if(res._id) {  // res._id?
+            setUserData({ email: res.data.email})
+            setIsLoggedIn(true);
+            history.push('/');
+          } else {
+            localStorage.removeItem(token);
+          }
+        })
+        .catch((err) => {
+          console.log("err =>", err)
+          history.push('/signin')
+        })
+        .finally(() => setIsCheckingToken(false))
+    }
   }, [])
 
+       // P14  Login & Logout  Register
+       const onLogin = ({ email, password }) => {
+        auth.signin(email, password)
+          .then((res) => { //{ data: { _id, email } }
+            if(res.token) {
+              setIsLoggedIn(true);
+              setUserData({ email });
+              localStorage.setItem('jwt', res.token);
+              history.push('/main');
+            } else {
+              setTooltipStatus('fail');
+              setIsInfoToolTipOpen(true);
+            }
+          })
+          .catch((err)=> {
+            console.log("err =>", err);
+            setTooltipStatus('fail');
+            setIsInfoToolTipOpen(true);
+          })
+      }
+
+      const onRegisterUser = ({ email, password }) => {
+        auth.signup(email, password)
+          .then((res) => {
+            if(res) {  //res.data._id
+              setTooltipStatus('success');
+              history.push('/signin')
+            } else {
+              setTooltipStatus('fail');
+            }
+          })
+          .catch((err) => {
+            // console.log("err =>", err);
+            setTooltipStatus('fail');
+          })
+          .finally(() => setIsInfoToolTipOpen(true))
+      }
+
+      const handleSignOut = () => {
+        setIsLoggedIn(false);
+        localStorage.removeItem('jwt');
+        history.push('/signin');
+      }
+
+  //p11  the effect for modal window closure - esc + mouse click //
+  useEffect(() => {
+    const closeByEscape = (e) => {
+      if (e.key === 'Escape') {
+        closeAllPopups();
+      }
+    };
+    const closeByModal = (e) => {
+      if (e.target.classList.contains("popup_open")) {
+        closeAllPopups();
+      }
+    };
+
+    document.addEventListener('keydown', closeByEscape);
+    document.addEventListener('click', closeByModal);
+
+    return () => {
+      document.removeEventListener('keydown', closeByEscape);
+      document.removeEventListener('click', closeByModal);
+    }
+}, [])
 
   function handleEditAvatarClick() {
     setIsEditAvatarPopupOpen(true);
@@ -182,7 +188,7 @@ function App() {
         setSubmitButtonEffect(false)
       })
   }
-  //{/* handeLikeClick card._id olduğundan burada sadece id objecti gerekiyor bize api.dele velike card._id card return card*/}
+
   function handleCardLike(card) {
     const isLiked = card.likes.some(user => user._id === currentUser._id);
 
@@ -194,7 +200,8 @@ function App() {
   }
 
   function handleCardDelete(card) {
-    api.deleteCard(card)
+    setSubmitButtonEffect(true)
+    api.deleteCard(card, token)
       .then(() => {
         setCards((state) => state.filter((cards) => cards._id !== card))
       })
@@ -203,7 +210,7 @@ function App() {
 
   function handleAddPlaceSubmit({ name, link }) {
     setSubmitButtonEffect(true)
-    api.addCard(name, link)
+    api.addCard( name, link, token)
       .then( res => {
         setCards([res, ...cards ]);
         closeAllPopups()

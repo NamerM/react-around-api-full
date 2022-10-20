@@ -1,8 +1,10 @@
+require('dotenv').config();
+const { NODE_ENV, JWT_SECRET } = process.env;
 const User = require('../models/user');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const { NODE_ENV, JWT_SECRET } = process.env;
-require('dotenv').config();
+
+
 
 
 const castError = (req, res, err) => {
@@ -15,10 +17,11 @@ const castError = (req, res, err) => {
   }
 };
 
-const getAllUsers = (req, res) => {
+const getAllUsers = (req, res, next) => {
   User.find({})
     .then((users) => res.status(200).send({ data: users }))
-    .catch(() => res.status(500).send({ message: 'An error has occured, server side' }));
+    .catch(next);
+    // .catch(() => res.status(500).send({ message: 'An error has occured, server side' }));
 };
 
 const getUser = (req, res) => {
