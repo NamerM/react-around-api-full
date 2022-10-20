@@ -15,7 +15,6 @@ const allowedCors = {
   ]
 }
 
-
 const app = express();
 const { PORT = 3000 } = process.env;
 const { router } = require('./routes');

@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const { NODE_ENV, JWT_SECRET } = process.env;
+const { JWT_SECRET } = process.env;
 require('dotenv').config();
 
 const errorAuth = (res) => {
@@ -17,8 +17,6 @@ const token = authorization.replace('Bearer ', '');
 let payload;
 
 try {
-  // console.log('token', token);
-  // console.log('secret', JWT_SECRET);
   payload = jwt.verify(token, JWT_SECRET );
 } catch (err) {
   return errorAuth(res);

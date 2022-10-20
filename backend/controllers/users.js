@@ -2,6 +2,7 @@ const User = require('../models/user');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { NODE_ENV, JWT_SECRET } = process.env;
+require('dotenv').config();
 
 
 const castError = (req, res, err) => {
@@ -40,11 +41,8 @@ const login = (req, res, next) => {
   const { email, password } = req.body;
   return User.findUserByCredentials(email, password)
     .then((user) => {
-      const token = jwt.sign(
-        { _id: user._id},
-        JWT_SECRET,
-        { expiresIn: '7d'}
-        );
+      const token = jwt.sign({ _id: user._id }, JWT_SECRET, { expiresIn: '7d'});
+
       res.send({ data: user.toJSON(), token })    // res.status(200).send(token);
     })
     .catch((err) => {
