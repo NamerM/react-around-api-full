@@ -14,29 +14,6 @@ const castError = (req, res, err) => {
   }
 };
 
-const getAllUsers = (req, res, next) => {
-  User.find({})
-    .then((users) => res.status(200).send({ data: users }))
-    .catch(next);
-    // .catch(() => res.status(500).send({ message: 'An error has occured, server side' }));
-};
-
-const getUser = (req, res) => {
-  const id = req.params.userId;
-  User.findById(id)
-    .orFail(() => {
-      const error = new Error('User id is not found');
-      error.status = 404;
-      throw error;
-    })
-    .then((user) => {
-      res.status(200).send({ data: user });
-    })
-    .catch((err) => {
-      castError(req, res, err);
-    });
-};
-
 const login = (req, res, next) => {
   const { email, password } = req.body;
   return User.findUserByCredentials(email, password)
@@ -79,6 +56,29 @@ const createUser = (req, res, next) => {
     });
 };
 
+const getAllUsers = (req, res, next) => {
+  User.find({})
+    .then((users) => res.status(200).send({ data: users }))
+    .catch(next);
+    // .catch(() => res.status(500).send({ message: 'An error has occured, server side' }));
+};
+
+const getUser = (req, res) => {
+  const id = req.user._id;
+  User.findById(id)
+    .orFail(() => {
+      const error = new Error('User id is not found');
+      error.status = 404;
+      throw error;
+    })
+    .then((user) => {
+      res.status(200).send({ data: user });
+    })
+    .catch((err) => {
+      castError(req, res, err);
+    });
+};
+
 const updateUserData = (req, res) => {
   const { body } = req;
   const id = req.user._id;
@@ -114,7 +114,7 @@ const updateUser = (req, res) => {
   return updateUserData(req, res);
 };
 
-const getCurrentUser = (req, res, next) => {
+const getUserById = (req, res, next) => {
   User.findById(req.user._id)
     console.log("req.user._id =>", req.user._id)
     .then((user) => {
@@ -133,5 +133,5 @@ module.exports = {
   createUser,
   updateAvatar,
   updateUser,
-  getCurrentUser,
+  getUserById,
 };

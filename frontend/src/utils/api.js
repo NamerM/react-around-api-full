@@ -1,7 +1,7 @@
 class Api {
-  constructor(options) {
-    this._baseUrl = options.baseUrl
-    this._headers = options.headers
+  constructor({ baseUrl, headers }) {
+    this._baseUrl = baseUrl;
+    this._headers = headers;
   }
 
 
@@ -12,15 +12,22 @@ class Api {
 
   getUserInfo() {
     return fetch(`${this._baseUrl}/users/me`, {
-      headers: this._headers
-    }).then(this._checkResponse)
+      headers: {
+        ...this._headers,
+        authorization: `Bearer ${localStorage.getItem("jwt")}`,
+      },
+    })
+    .then(this._checkResponse)
   }
 
   editProfile = (name, about) => {
     console.log(name, about)
     return fetch(`${this._baseUrl}/users/me`, {
       method: "PATCH",
-      headers: this._headers,
+      headers: {
+        ...this._headers,
+        authorization: `Bearer ${localStorage.getItem("jwt")}`,
+      },
       body: JSON.stringify({
         name,
         about,
@@ -33,7 +40,10 @@ class Api {
     console.log(avatar);
     return fetch(`${this._baseUrl}/users/me/avatar`, {
       method: "PATCH",
-      headers: this._headers,
+      headers: {
+        ...this._headers,
+        authorization: `Bearer ${localStorage.getItem("jwt")}`,
+      },
       body: JSON.stringify({
         avatar
       })
@@ -43,9 +53,10 @@ class Api {
 
   getInitialCards() {
     return fetch(`${this._baseUrl}/cards`, {
-      headers:
-        this._headers,
-        // Authorization: `Bearer ${localStorage.getItem('token') }`  //app.js..handlelogin 1st parameter 'token'
+      headers: {
+        ...this._headers,
+        authorization: `Bearer ${localStorage.getItem('jwt') }`   //app.js..handlelogin 1st parameter 'jwt'
+      }
     })
     .then(this._checkResponse)
   } //name  & link in the body check m.
@@ -54,7 +65,10 @@ class Api {
     console.log(name, link);
     return fetch(`${this._baseUrl}/cards`, {
       method: "POST",
-      headers: this._headers,
+      headers: {
+        ...this._headers,
+        authorization: `Bearer ${localStorage.getItem("jwt")}`},
+
       body: JSON.stringify({
         name,
         link,
@@ -74,7 +88,9 @@ class Api {
   removeLike = (id) => {
     return fetch(`${this._baseUrl}/cards/likes/${id}`, {
       method: "DELETE",
-      headers: this._headers
+      headers: {
+        ...this._headers,
+        authorization: `Bearer ${localStorage.getItem("jwt")}`},
     })
     .then(this._checkResponse)
   }
@@ -83,7 +99,9 @@ class Api {
     const method = !isLiked ? "DELETE" : "PUT";
     return fetch(`${this._baseUrl}/cards/likes/${id}`, {
     method: method,
-    headers: this._headers
+    headers: {
+    ...this._headers,
+    authorization: `Bearer ${localStorage.getItem("jwt")}`},
     })
     .then(res => this._checkResponse(res))
   }
@@ -91,7 +109,9 @@ class Api {
   deleteCard(id) {
     return fetch(`${this._baseUrl} /cards/${id}`, {
       method: "DELETE",
-      headers: this._headers
+      headers: {
+        ...this._headers,
+        authorization: `Bearer ${localStorage.getItem("jwt")}`},
     })
     .then(this._checkResponse)
   }

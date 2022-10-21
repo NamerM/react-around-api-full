@@ -2,7 +2,6 @@ import React from "react";
 import profileButton from "../images/edit-pen.svg";
 import addButton from "../images/add-button.svg";
 import Card from "./Card";
-
 import { CurrentUserContext } from '../../src/contexts/CurrentUserContext'
 
 function Main({
@@ -60,9 +59,19 @@ function Main({
 
       <section className="elements page__section">
         <ul className="elements__cards">
-         {cards.map((card) => (
-            <Card key={card._id} card={card} onClick={onCardClick} onCardLike={onCardLike} onCardDelete={onCardDelete} />
-          ))}
+         {console.log(cards)}
+          {cards.data.map((card) =>  {
+            return (
+              <Card
+                card={card}
+                key={card._id}
+                onClick={onCardClick}
+                onCardLike={onCardLike}
+                onCardDelete={onCardDelete}
+              />
+            )
+          }
+          )}
         </ul>
       </section>
     </main>

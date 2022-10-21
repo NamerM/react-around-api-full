@@ -37,27 +37,27 @@ function App() {
  //p11
   useEffect(() => {
     if (token) {  // token && isLoggedIn
-      api.getUserInfo(token)
-      .then( res => {  // { data: { name, avatar, about, _id}}
-        setCurrentUser(res);
-      })
-      .catch(console.log);
-    api.getInitialCards(token)
-      .then( res => {
-        setCards(res);
-      })
-      .catch(console.log);
+        api.getUserInfo()
+        .then( res => {  // { data: { name, avatar, about, _id}}
+          setCurrentUser(res);
+        })
+        .catch(console.log);
+      api.getInitialCards()
+        .then( res => {
+          setCards(res);
+        })
+        .catch(console.log);
     }
     }, [token])   // token, isLoggedIn
 
   //P14 check token
   useEffect(() => {
-    const token = localStorage.getItem('jwt')
+    const token = localStorage.getItem("jwt")
     if(token) {
       auth
         .checkToken(token)
         .then((res) => {
-          if(res._id) {  // res._id?
+          if(res._id) {
             setIsLoggedIn(true);
             setUserData({ email: res.data.email})
             history.push('/');
@@ -71,7 +71,7 @@ function App() {
         })
         .finally(() => setIsCheckingToken(false))
     }
-  }, [])
+  }, [history])
 
        // P14  Login & Logout  Register
        const onLogin = ({ email, password }) => {
@@ -80,7 +80,7 @@ function App() {
             if(res) {
               setIsLoggedIn(true);
               setUserData({ email });
-              localStorage.setItem('jwt', res.token);
+              localStorage.setItem("jwt", res.token);
               setToken(res.token);
               history.push('/main');
             } else {
@@ -114,7 +114,7 @@ function App() {
 
       const handleSignOut = () => {
         setIsLoggedIn(false);
-        localStorage.removeItem('jwt');
+        localStorage.removeItem("jwt");
         history.push('/signin');
       }
 
@@ -202,11 +202,15 @@ function App() {
 
   function handleCardDelete(card) {
     setSubmitButtonEffect(true)
-    api.deleteCard(card, token)
+    api.deleteCard(card._id)
       .then(() => {
-        setCards((state) => state.filter((cards) => cards._id !== card))
+        setCards((state) => state.filter((cards) => cards._id !== card._id))
+        closeAllPopups();
       })
       .catch(console.log)
+      .finally(() => {
+        setSubmitButtonEffect(false);
+      })
    }
 
   function handleAddPlaceSubmit({ name, link }) {
@@ -264,7 +268,7 @@ function App() {
               onCardClick={handleCardClick}
               onCardLike={handleCardLike}
               onCardDelete={handleCardDelete}
-              cards = {cards}
+              cards={cards}
               />
             </ProtectedRoute>
             <Route path={"/signin"}>
