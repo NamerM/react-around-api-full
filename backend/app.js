@@ -1,12 +1,11 @@
+require('dotenv').config({ path: './.env' });
+console.log(process.env.NODE_ENV);
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const helmet = require('helmet');
 const { login, createUser } = require('./controllers/users');
 const auth = require('./middleware/auth');
-require('dotenv').config();
-console.log(process.env.NODE_ENV);
-
 
 const allowedCors = {
   origin: [
@@ -17,7 +16,7 @@ const allowedCors = {
 }
 
 const app = express();
-const { PORT = 3000 } = process.env;
+const { PORT = 3001 } = process.env;
 const { router } = require('./routes');
 
 mongoose.connect('mongodb://localhost:27017/aroundb');
@@ -41,8 +40,6 @@ app.all('*', (req, res) => {
 app.listen(PORT, () => {
   console.log(`App is available  on port  ${PORT}...`);
 });
-
-
 
 // not needed
 // app.use((req, res, next) => {

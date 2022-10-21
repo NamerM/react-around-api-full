@@ -36,7 +36,7 @@ function App() {
 
  //p11
   useEffect(() => {
-    if (token && isLoggedIn) {
+    if (token) {  // token && isLoggedIn
       api.getUserInfo(token)
       .then( res => {  // { data: { name, avatar, about, _id}}
         setCurrentUser(res);
@@ -48,7 +48,7 @@ function App() {
       })
       .catch(console.log);
     }
-    }, [token, isLoggedIn])
+    }, [token])   // token, isLoggedIn
 
   //P14 check token
   useEffect(() => {
@@ -58,15 +58,15 @@ function App() {
         .checkToken(token)
         .then((res) => {
           if(res._id) {  // res._id?
-            setUserData({ email: res.data.email})
             setIsLoggedIn(true);
+            setUserData({ email: res.data.email})
             history.push('/');
           } else {
             localStorage.removeItem(token);
           }
         })
         .catch((err) => {
-          console.log("err =>", err)
+          console.log('err =>', err)
           history.push('/signin')
         })
         .finally(() => setIsCheckingToken(false))
@@ -77,10 +77,11 @@ function App() {
        const onLogin = ({ email, password }) => {
         auth.signin(email, password)
           .then((res) => { //{ data: { _id, email } }
-            if(res.token) {
+            if(res) {
               setIsLoggedIn(true);
               setUserData({ email });
               localStorage.setItem('jwt', res.token);
+              setToken(res.token);
               history.push('/main');
             } else {
               setTooltipStatus('fail');
@@ -165,7 +166,7 @@ function App() {
 
   function handleUpdateUser({name, about}){
     setSubmitButtonEffect(true)
-    api.editProfile(name, about)
+    api.editProfile({ name, about }, token)
       .then( res => {
         setCurrentUser(res);
         closeAllPopups()
@@ -192,7 +193,7 @@ function App() {
   function handleCardLike(card) {
     const isLiked = card.likes.some(user => user._id === currentUser._id);
 
-    api.cardLikeStatusChange(card._id, !isLiked)
+    api.cardLikeStatusChange(card._id, !isLiked, token)
       .then((newCard) => {
         setCards((state) => state.map((currentCard) => currentCard._id === card._id ? newCard : currentCard));
       })
@@ -210,7 +211,7 @@ function App() {
 
   function handleAddPlaceSubmit({ name, link }) {
     setSubmitButtonEffect(true)
-    api.addCard( name, link, token)
+    api.addCard( { name, link }, token)
       .then( res => {
         setCards([res, ...cards ]);
         closeAllPopups()

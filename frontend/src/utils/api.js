@@ -11,14 +11,14 @@ class Api {
 
 
   getUserInfo() {
-    return fetch(this._baseUrl + '/users/me', {
+    return fetch(`${this._baseUrl}/users/me`, {
       headers: this._headers
     }).then(this._checkResponse)
   }
 
   editProfile = (name, about) => {
     console.log(name, about)
-    return fetch(this._baseUrl + '/users/me', {
+    return fetch(`${this._baseUrl}/users/me`, {
       method: "PATCH",
       headers: this._headers,
       body: JSON.stringify({
@@ -31,7 +31,7 @@ class Api {
 
   editAvatar(avatar) {
     console.log(avatar);
-    return fetch(this._baseUrl + '/users/me/avatar', {
+    return fetch(`${this._baseUrl}/users/me/avatar`, {
       method: "PATCH",
       headers: this._headers,
       body: JSON.stringify({
@@ -42,7 +42,7 @@ class Api {
   }
 
   getInitialCards() {
-    return fetch(this._baseUrl + '/cards', {
+    return fetch(`${this._baseUrl}/cards`, {
       headers:
         this._headers,
         // Authorization: `Bearer ${localStorage.getItem('token') }`  //app.js..handlelogin 1st parameter 'token'
@@ -52,7 +52,7 @@ class Api {
 
   addCard(name, link,) {
     console.log(name, link);
-    return fetch(this._baseUrl + '/cards', {
+    return fetch(`${this._baseUrl}/cards`, {
       method: "POST",
       headers: this._headers,
       body: JSON.stringify({
@@ -64,7 +64,7 @@ class Api {
   }
 
   addLike = (id) => {
-    return fetch(this._baseUrl + '/cards/likes/' + id, {
+    return fetch(`${this._baseUrl}/cards/likes/${id}`, {
       method: "PUT",
       headers: this._headers
     })
@@ -72,7 +72,7 @@ class Api {
   }
 
   removeLike = (id) => {
-    return fetch(this._baseUrl + '/cards/likes/' + id, {
+    return fetch(`${this._baseUrl}/cards/likes/${id}`, {
       method: "DELETE",
       headers: this._headers
     })
@@ -89,7 +89,7 @@ class Api {
   }
 
   deleteCard(id) {
-    return fetch(this._baseUrl + '/cards/' + id, {
+    return fetch(`${this._baseUrl} /cards/${id}`, {
       method: "DELETE",
       headers: this._headers
     })
@@ -97,19 +97,19 @@ class Api {
   }
 }
 
+// let node_env = "production";
+
+// let baseUrl = node_env === "production"
+//   ? "https://api.mnamerstudents.nomoredomainssbs.ru"
+//   : "http://localhost:3001"
+
+
 const api = new Api({
-  baseUrl: "http://localhost:3001",
+  baseUrl: 'http://localhost:3001',
   headers: {
-    authorization: `Bearer ${localStorage.getItem('jwt') }`,
+    authorization: `Bearer ${localStorage.getItem('jwt')}`,
     "Content-Type": "application/json"
   }
 })
-// const api = new Api({
-//   baseUrl: "https://around.nomoreparties.co/v1/cohort-3-en",
-//   headers: {
-//     authorization: "9398a483-484e-4ebd-a374-b6b3b985e9c4",
-//     "Content-Type": "application/json"
-//   }
-// })
 
 export default api;

@@ -1,8 +1,8 @@
 // let node_env = 'production';
-export const BASE_URL = "http://localhost:3000";
+export const BASE_URL = "http://localhost:3001";
 
 //  "https://mnamer.students.nomoredomainssbs.ru"
-//  "http://localhost:3001";
+
 
 const checkFetch = (url, headers) => {
   return fetch(url, headers).then((res) =>
@@ -47,7 +47,7 @@ export const checkToken = (token) => {
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`  //${localStorage.getItem(token)}
+      authorization: `Bearer ${token}`  //${localStorage.getItem(token)}
     },
   })
 }
