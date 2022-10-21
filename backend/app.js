@@ -25,6 +25,7 @@ app.use(helmet());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors(allowedCors));
+app.options('*'), cors();
 
 app.post('/signin', login);
 app.post('/signup', createUser);

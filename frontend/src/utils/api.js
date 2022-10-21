@@ -61,18 +61,14 @@ class Api {
     .then(this._checkResponse)
   } //name  & link in the body check m.
 
-  addCard(name, link,) {
-    console.log(name, link);
+  addCard({name, link}) {
     return fetch(`${this._baseUrl}/cards`, {
-      method: "POST",
       headers: {
-        ...this._headers,
-        authorization: `Bearer ${localStorage.getItem("jwt")}`},
-
-      body: JSON.stringify({
-        name,
-        link,
-      })
+        "Content-Type": "application/json",
+        authorization: `Bearer ${localStorage.getItem("jwt")}`
+      },
+      method: "POST",
+      body: JSON.stringify({ name, link })
     })
     .then(this._checkResponse)
   }
@@ -96,32 +92,29 @@ class Api {
   }
 
   cardLikeStatusChange = (id, isLiked) => {
-    const method = !isLiked ? "DELETE" : "PUT";
+    const method = isLiked ? "DELETE" : "PUT";
+    console.log(id, isLiked);
     return fetch(`${this._baseUrl}/cards/likes/${id}`, {
-    method: method,
     headers: {
-    ...this._headers,
-    authorization: `Bearer ${localStorage.getItem("jwt")}`},
+      "Content-Type": "application/json",
+      authorization: `Bearer ${localStorage.getItem("jwt")}`
+      },
+    method: method,
     })
-    .then(res => this._checkResponse(res))
+    .then(this._checkResponse)
   }
 
   deleteCard(id) {
-    return fetch(`${this._baseUrl} /cards/${id}`, {
-      method: "DELETE",
+    return fetch(`${this._baseUrl}/cards/${id}`, {
       headers: {
-        ...this._headers,
-        authorization: `Bearer ${localStorage.getItem("jwt")}`},
+        "Content-Type": "application/json",
+        authorization: `Bearer ${localStorage.getItem("jwt")}`
+      },
+      method: "DELETE",
     })
     .then(this._checkResponse)
   }
 }
-
-// let node_env = "production";
-
-// let baseUrl = node_env === "production"
-//   ? "https://api.mnamerstudents.nomoredomainssbs.ru"
-//   : "http://localhost:3001"
 
 
 const api = new Api({

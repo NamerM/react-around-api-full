@@ -1,7 +1,6 @@
-// let node_env = 'production';
 export const BASE_URL = "http://localhost:3001";
 
-//  "https://mnamer.students.nomoredomainssbs.ru"
+//  "https://api.mnamer.students.nomoredomainssbs.ru"
 
 
 const checkFetch = (url, headers) => {

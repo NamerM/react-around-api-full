@@ -15,13 +15,17 @@ import api from '../../src/utils/api';
 import * as auth from "../utils/auth.js";
 import { CurrentUserContext } from '../../src/contexts/CurrentUserContext'
 import { Redirect, Switch, useHistory, Route } from 'react-router-dom';
+import { set } from 'mongoose';
 
 function App() {
   const [currentUser, setCurrentUser] = useState({});   // {name, about, avatar }
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen ] = useState(false);
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
-  const [selectedCard, setSelectedCard] = useState(undefined);
+  const [selectedCard, setSelectedCard] = useState({
+    name: '',
+    link: '',
+  }); //undefined degistirdik
   const [cards, setCards] = useState([]);
   const [submitButtonEffect, setSubmitButtonEffect] = useState(false);
   //P14 Additions
@@ -37,16 +41,16 @@ function App() {
  //p11
   useEffect(() => {
     if (token) {  // token && isLoggedIn
-        api.getUserInfo()
+        api.getUserInfo(token)
         .then( res => {  // { data: { name, avatar, about, _id}}
           setCurrentUser(res);
         })
-        .catch(console.log);
-      api.getInitialCards()
+        .catch(() => console.log("something went wrong"));
+      api.getInitialCards(token)
         .then( res => {
           setCards(res);
         })
-        .catch(console.log);
+        .catch(() => console.log("something went wrong"));
     }
     }, [token])   // token, isLoggedIn
 
@@ -73,11 +77,11 @@ function App() {
     }
   }, [history])
 
-       // P14  Login & Logout  Register
+       //   Login & Logout  Register p14+
        const onLogin = ({ email, password }) => {
         auth.signin(email, password)
           .then((res) => { //{ data: { _id, email } }
-            if(res) {
+            if(res.token) {
               setIsLoggedIn(true);
               setUserData({ email });
               localStorage.setItem("jwt", res.token);
@@ -171,7 +175,7 @@ function App() {
         setCurrentUser(res);
         closeAllPopups()
       })
-      .catch(console.log)
+      .catch((err) => console.log(err))
       .finally(() => {
         setSubmitButtonEffect(false)
       })
@@ -184,43 +188,50 @@ function App() {
         setCurrentUser(res);
         closeAllPopups()
       })
-      .catch(console.log)
+      .catch((err) => console.log(err))
       .finally(() => {
         setSubmitButtonEffect(false)
       })
   }
 
   function handleCardLike(card) {
-    const isLiked = card.likes.some(user => user._id === currentUser._id);
-
-    api.cardLikeStatusChange(card._id, !isLiked, token)
+    const isLiked = card.likes.some(user => user === currentUser._id);
+    console.log(card._id, isLiked);
+    api
+      .cardLikeStatusChange(card._id, isLiked)
       .then((newCard) => {
-        setCards((state) => state.map((currentCard) => currentCard._id === card._id ? newCard : currentCard));
+        setCards((state) =>
+          state.map(currentCard => {
+            return currentCard._id === card._id ? newCard : currentCard
+          })
+        );
       })
-      .catch(console.log)
+      .catch((err) => console.log(err));
   }
 
   function handleCardDelete(card) {
-    setSubmitButtonEffect(true)
-    api.deleteCard(card._id)
+    setSubmitButtonEffect(true);
+    api
       .then(() => {
-        setCards((state) => state.filter((cards) => cards._id !== card._id))
+        setCards((state) => state.filter((cards) => cards._id !== card))
         closeAllPopups();
       })
-      .catch(console.log)
+      .catch((err) => console.log(err))
       .finally(() => {
         setSubmitButtonEffect(false);
       })
    }
 
-  function handleAddPlaceSubmit({ name, link }) {
+  function handleAddPlaceSubmit({ name, link }) { //{ name, link }
     setSubmitButtonEffect(true)
-    api.addCard( { name, link }, token)
+    api
+      .addCard({ name, link })
       .then( res => {
-        setCards([res, ...cards ]);
+        console.log(res);
+        setCards([res, ...cards]);
         closeAllPopups()
       })
-      .catch(console.log)
+      .catch((err) => console.log(err))
       .finally(() => {
         setSubmitButtonEffect(false)
       })
