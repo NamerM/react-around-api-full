@@ -217,10 +217,12 @@ function App() {
   }
 
   function handleCardDelete(card) {
+    console.log(card);
+    // console.log(cards);
     setSubmitButtonEffect(true);
     api.deleteCard(card._id)
-      .then(() => {
-        const state = cards.data.filter(
+      .then((res) => {
+        const state = cards.filter(
           (stateCards) => stateCards._id !== card._id
         );
         setCards(state);

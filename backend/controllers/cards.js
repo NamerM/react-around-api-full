@@ -40,8 +40,8 @@ const deleteCard = (req, res, next) => {
       if(!card.owner.equals(req.user._id)) {
         res.status(401).send({ message: 'This is not your card to delete!'});
       } else {
-        Card.deleteOne(card)
-          .then(() => res.send({data: card}));
+        Card.findByIdAndRemove(cardId)
+          .then((card) => res.send(card))
       }
     })
     // .then((card) => res.status(200).send({ message: 'Card successfully removed', data: card }))
