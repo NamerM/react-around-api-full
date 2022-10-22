@@ -101,7 +101,9 @@ const updateAvatar = (req, res) => {
   const avatar = req.body;
 
   if (!avatar) {
-    return res.status(400).send({ message: 'Avatar should have inputs! - Can\'t leave avatar empty!' });
+    return res
+      .status(400)
+      .send({ message: 'Avatar should have inputs! - Can\'t leave avatar empty!' });
   }
   return updateUserData(req, res);
 };

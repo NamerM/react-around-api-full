@@ -186,12 +186,10 @@ function App() {
       })
   }
 
-  function handleUpdateAvatar( avatar) {
-
+  function handleUpdateAvatar({ avatar }) {
     setSubmitButtonEffect(true)
     api.editAvatar(avatar)
       .then((res) => {
-        console.log(res);
         setCurrentUser(res);
         closeAllPopups()
       })
@@ -222,9 +220,9 @@ function App() {
     setSubmitButtonEffect(true);
     api.deleteCard(card._id)
       .then((res) => {
-        // console.log(res);
+        console.log(res);
         const state = cards.data.filter(
-          stateCards => stateCards._id !== card._id
+          (stateCards) => stateCards._id !== card._id
         );
         setCards(state);
         closeAllPopups();

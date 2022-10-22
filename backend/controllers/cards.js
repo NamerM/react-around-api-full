@@ -1,5 +1,4 @@
 const Card = require('../models/card');
-const { logger } = require('../../frontend/src/utils/logger');
 
 const getAllCards = (req, res) => {
   Card.find({})
@@ -9,7 +8,6 @@ const getAllCards = (req, res) => {
 
 const createCard = (req, res, next) => {
   const { name, link } = req.body;
-  logger(link);
   const owner = req.user._id;
 
   Card.create({
@@ -48,7 +46,6 @@ const deleteCard = (req, res, next) => {
     })
     // .then((card) => res.status(200).send({ message: 'Card successfully removed', data: card }))
     .catch((err) => {
-      logger(err);
       if (err.name === 'CastError') {
         res.status(400).send({ message: 'Bad Request, Invalid data format' });
       } else if (err.status === 404) {
