@@ -14,7 +14,7 @@ import '../index.js';
 import api from '../../src/utils/api';
 import * as auth from "../utils/auth.js";
 import { CurrentUserContext } from '../../src/contexts/CurrentUserContext'
-import { Redirect, Switch, useHistory, Route } from 'react-router-dom';
+import { Switch, useHistory, Route } from 'react-router-dom';
 // import { set } from 'mongoose';
 
 function App() {
@@ -37,24 +37,23 @@ function App() {
   const [isImagePopupOpen, setIsImagePopupOpen] = useState(false);
   const [tooltipStatus, setTooltipStatus] = useState('');
 
-  //P15
-  const [token, setToken] = useState(localStorage.getItem("jwt"));
-
  //p11
   useEffect(() => {
+    const token = localStorage.getItem("jwt")
     if (token) {  // token && isLoggedIn
         api.getUserInfo(token)
         .then( res => {  // { data: { name, avatar, about, _id}}
-          setCurrentUser(res);
+          // console.log('line50', res);
+          setCurrentUser(res.data);
         })
         .catch((err) => console.log(err));
       api.getInitialCards(token)
         .then( res => {
-          setCards(res);
+          setCards(res.data);
         })
         .catch((err) => console.log(err));
     }
-    }, [token])   // token, isLoggedIn
+    }, [])   // token, isLoggedIn
 
   //P14 check token
   useEffect(() => {
@@ -63,11 +62,13 @@ function App() {
       auth
         .checkToken(token)
         .then((res) => {
-          if(res._id) {
+          // console.log(res);
+          if(res.data._id) {
             setIsLoggedIn(true);
             setUserData({ email: res.data.email})
             history.push('/');
           } else {
+            history.push('/signin');
             localStorage.removeItem(token);
           }
         })
@@ -87,7 +88,6 @@ function App() {
               setIsLoggedIn(true);
               setUserData({ email });
               localStorage.setItem("jwt", res.token);
-              setToken(res.token);
               history.push('/');
             } else {
               setTooltipStatus('fail');
@@ -172,11 +172,12 @@ function App() {
     setIsImagePopupOpen(false);
   }
 
-  function handleUpdateUser({name, about}){
+  function handleUpdateUser({ name, about }){
     setSubmitButtonEffect(true)
-    api.editProfile({ name, about }, token)
+    api.editProfile({ name, about })
       .then( res => {
-        setCurrentUser(res);
+        // console.log('line182', res);
+        setCurrentUser(res.data);
         closeAllPopups()
       })
       .catch((err) => console.log(err))
@@ -185,10 +186,12 @@ function App() {
       })
   }
 
-  function handleUpdateAvatar({avatar}) {
+  function handleUpdateAvatar( avatar) {
+
     setSubmitButtonEffect(true)
     api.editAvatar(avatar)
-      .then( res => {
+      .then((res) => {
+        console.log(res);
         setCurrentUser(res);
         closeAllPopups()
       })
@@ -206,7 +209,9 @@ function App() {
       .then((newCard) => {
         setCards((state) =>
           state.map(currentCard => {
-            return currentCard._id === card._id ? newCard : currentCard
+            return currentCard._id === card._id
+            ? newCard.data
+            : currentCard;
           })
         );
       })
@@ -216,8 +221,9 @@ function App() {
   function handleCardDelete(card) {
     setSubmitButtonEffect(true);
     api.deleteCard(card._id)
-      .then(() => {
-        const state = cards.filter(
+      .then((res) => {
+        // console.log(res);
+        const state = cards.data.filter(
           stateCards => stateCards._id !== card._id
         );
         setCards(state);
@@ -234,7 +240,9 @@ function App() {
     api
       .addCard({ name, link })
       .then( res => {
-        setCards([res, ...cards]);
+        // console.log(res);
+        // console.log(cards);
+        setCards([res.data, ...cards]);
         closeAllPopups()
       })
       .catch((err) => console.log(err))
@@ -300,9 +308,9 @@ function App() {
             <Route path={"/signup"}>
               <Register onRegisterUser={onRegisterUser} />
             </Route>
-            <Route>
+            {/* <Route>
               {isLoggedIn ? ( <Redirect to="/" /> ) : ( <Redirect to="/signin" /> ) }
-            </Route>
+            </Route> */}
           </Switch>
           <Footer />
         </div>

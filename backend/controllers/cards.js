@@ -1,4 +1,5 @@
 const Card = require('../models/card');
+const { logger } = require('../../frontend/src/utils/logger');
 
 const getAllCards = (req, res) => {
   Card.find({})
@@ -7,15 +8,18 @@ const getAllCards = (req, res) => {
 };
 
 const createCard = (req, res, next) => {
-  const { name, likes, link } = req.body;
-
+  const { name, link } = req.body;
+  logger(link);
   const owner = req.user._id;
 
   Card.create({
-    name, likes, link, owner
+    name,
+    link,
+    owner,  //likes removed
   })
     .then((card) => res.status(201).send({ data: card }))
     .catch((err) => {
+      logger(err);
       if (err.name === 'ValidationError') {
         res.status(400).send({ message: 'Bad Request, Invalid data format' });
       } else if (err.status === 500) {
@@ -44,6 +48,7 @@ const deleteCard = (req, res, next) => {
     })
     // .then((card) => res.status(200).send({ message: 'Card successfully removed', data: card }))
     .catch((err) => {
+      logger(err);
       if (err.name === 'CastError') {
         res.status(400).send({ message: 'Bad Request, Invalid data format' });
       } else if (err.status === 404) {
@@ -56,7 +61,7 @@ const deleteCard = (req, res, next) => {
     });
 };
 
-const updateLikes = (req, res, operator, next) => {
+const updateLikes = (req, res, next, operator) => {
   const { cardId } = req.params;
   const userId = req.user._id;
 

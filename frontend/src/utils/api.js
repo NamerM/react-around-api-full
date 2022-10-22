@@ -20,8 +20,8 @@ class Api {
     .then(this._checkResponse)
   }
 
-  editProfile = (name, about) => {
-    console.log(name, about)
+  editProfile = ({ name, about }) => {
+    console.log(`name:${name} and it's about:${about}`);
     return fetch(`${this._baseUrl}/users/me`, {
       method: "PATCH",
       headers: {
@@ -45,7 +45,7 @@ class Api {
         authorization: `Bearer ${localStorage.getItem("jwt")}`,
       },
       body: JSON.stringify({
-        avatar
+        avatar,
       })
     })
     .then(this._checkResponse)
@@ -73,28 +73,11 @@ class Api {
     .then(this._checkResponse)
   }
 
-  addLike = (id) => {
-    return fetch(`${this._baseUrl}/cards/likes/${id}`, {
-      method: "PUT",
-      headers: this._headers
-    })
-    .then(this._checkResponse)
-  }
-
-  removeLike = (id) => {
-    return fetch(`${this._baseUrl}/cards/likes/${id}`, {
-      method: "DELETE",
-      headers: {
-        ...this._headers,
-        authorization: `Bearer ${localStorage.getItem("jwt")}`},
-    })
-    .then(this._checkResponse)
-  }
-
   cardLikeStatusChange = (id, isLiked) => {
     const method = isLiked ? "DELETE" : "PUT";
-    console.log(id, isLiked);
-    return fetch(`${this._baseUrl}/cards/likes/${id}`, {
+    // console.log(id, isLiked);
+    // console.log(method);
+    return fetch(`${this._baseUrl}/cards/${id}/likes`, {
     headers: {
       "Content-Type": "application/json",
       authorization: `Bearer ${localStorage.getItem("jwt")}`
@@ -113,6 +96,7 @@ class Api {
       method: "DELETE",
     })
     .then(this._checkResponse)
+    .catch((err) => console.log(err))
   }
 }
 

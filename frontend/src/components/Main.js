@@ -56,8 +56,7 @@ function Main({
 
       <section className="elements page__section">
         <ul className="elements__cards">
-         {console.log(cards)}
-          {cards.data.map((card) =>  {
+          {cards.map((card) =>  {
             return (
               <Card
                 card={card}

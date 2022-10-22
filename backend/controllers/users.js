@@ -3,6 +3,7 @@ const { NODE_ENV, JWT_SECRET } = process.env;
 const User = require('../models/user');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const logger = require('../../frontend/src/utils/logger');
 
 const castError = (req, res, err) => {
   if (err.name === 'CastError') {
@@ -116,7 +117,7 @@ const updateUser = (req, res) => {
 
 const getUserById = (req, res, next) => {
   User.findById(req.user._id)
-    console.log("req.user._id =>", req.user._id)
+    logger("req.user._id =>", req.user._id)
     .then((user) => {
       if (!user) {
         throw new Error('Bad Request');
