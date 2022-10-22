@@ -96,17 +96,29 @@ const updateUserData = (req, res) => {
       castError(req, res, err);
     });
 };
-
-const updateAvatar = (req, res) => {
-  const avatar = req.body;
-
-  if (!avatar) {
-    return res
-      .status(400)
-      .send({ message: 'Avatar should have inputs! - Can\'t leave avatar empty!' });
-  }
-  return updateUserData(req, res);
+const updateAvatar = (req, res, next) => {
+  const avatar = req.body.avatar;
+  User.findByIdAndUpdate(
+    req.user._id,
+    { avatar },
+    {
+      new: true,
+      runValidators: true,
+    }
+  )
+    .then((user) => res.status(200).send(user))
+    .catch(next);
 };
+
+// const updateAvatar = (req, res) => {
+//   const avatar = req.body.avatar;
+
+//   if (!avatar) {
+//     return res
+//       .status(400).send({ message: 'Avatar should have inputs! - Can\'t leave avatar empty!' });
+//   }
+//   return updateUserData(req, res);
+// };
 
 const updateUser = (req, res) => {
   const { name, about } = req.body;

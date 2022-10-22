@@ -219,8 +219,7 @@ function App() {
   function handleCardDelete(card) {
     setSubmitButtonEffect(true);
     api.deleteCard(card._id)
-      .then((res) => {
-        console.log(res);
+      .then(() => {
         const state = cards.data.filter(
           (stateCards) => stateCards._id !== card._id
         );
