@@ -5,18 +5,16 @@ import Card from "./Card";
 import { CurrentUserContext } from '../../src/contexts/CurrentUserContext'
 
 function Main({
-  onEditAvatarClick,
   onEditProfileClick,
+  onEditAvatarClick,
   onAddPlaceClick,
   onCardClick,
   cards,
   onCardLike,
   onCardDelete
-
 }) {
 
   const currentUser = React.useContext(CurrentUserContext)
-
 
   return (
     <main className="content">
@@ -47,7 +45,6 @@ function Main({
           </div>
           <p className="profile__profession">{currentUser.about}</p>
         </div>
-
         <button type="button" className="add-button" onClick={onAddPlaceClick}>
           <img
             src={addButton}

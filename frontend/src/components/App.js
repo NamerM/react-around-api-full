@@ -15,7 +15,7 @@ import api from '../../src/utils/api';
 import * as auth from "../utils/auth.js";
 import { CurrentUserContext } from '../../src/contexts/CurrentUserContext'
 import { Redirect, Switch, useHistory, Route } from 'react-router-dom';
-import { set } from 'mongoose';
+// import { set } from 'mongoose';
 
 function App() {
   const [currentUser, setCurrentUser] = useState({});   // {name, about, avatar }
@@ -24,7 +24,7 @@ function App() {
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
   const [selectedCard, setSelectedCard] = useState({
     name: '',
-    link: '',
+    link: ''
   }); //undefined degistirdik
   const [cards, setCards] = useState([]);
   const [submitButtonEffect, setSubmitButtonEffect] = useState(false);
@@ -34,7 +34,9 @@ function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isCheckingToken, setIsCheckingToken] = useState(true);
   const [isInfoToolTipOpen, setIsInfoToolTipOpen] = useState(false);
+  const [isImagePopupOpen, setIsImagePopupOpen] = useState(false);
   const [tooltipStatus, setTooltipStatus] = useState('');
+
   //P15
   const [token, setToken] = useState(localStorage.getItem("jwt"));
 
@@ -45,12 +47,12 @@ function App() {
         .then( res => {  // { data: { name, avatar, about, _id}}
           setCurrentUser(res);
         })
-        .catch(() => console.log("something went wrong"));
+        .catch((err) => console.log(err));
       api.getInitialCards(token)
         .then( res => {
           setCards(res);
         })
-        .catch(() => console.log("something went wrong"));
+        .catch((err) => console.log(err));
     }
     }, [token])   // token, isLoggedIn
 
@@ -86,7 +88,7 @@ function App() {
               setUserData({ email });
               localStorage.setItem("jwt", res.token);
               setToken(res.token);
-              history.push('/main');
+              history.push('/');
             } else {
               setTooltipStatus('fail');
               setIsInfoToolTipOpen(true);
@@ -156,16 +158,18 @@ function App() {
     setIsAddPlacePopupOpen(true);
   }
 
+  function handleCardClick(card) {
+    setIsImagePopupOpen(true);
+    setSelectedCard(card);
+  }
+
   function closeAllPopups() {
     setIsEditAvatarPopupOpen(false);
     setIsEditProfilePopupOpen(false);
     setIsAddPlacePopupOpen(false);
     setSelectedCard(undefined);
     setIsInfoToolTipOpen(false);
-  }
-
-  function handleCardClick(card) {
-    setSelectedCard(card);
+    setIsImagePopupOpen(false);
   }
 
   function handleUpdateUser({name, about}){
@@ -211,9 +215,12 @@ function App() {
 
   function handleCardDelete(card) {
     setSubmitButtonEffect(true);
-    api
+    api.deleteCard(card._id)
       .then(() => {
-        setCards((state) => state.filter((cards) => cards._id !== card))
+        const state = cards.filter(
+          stateCards => stateCards._id !== card._id
+        );
+        setCards(state);
         closeAllPopups();
       })
       .catch((err) => console.log(err))
@@ -227,7 +234,6 @@ function App() {
     api
       .addCard({ name, link })
       .then( res => {
-        console.log(res);
         setCards([res, ...cards]);
         closeAllPopups()
       })
@@ -258,11 +264,17 @@ function App() {
             onAddPlaceSubmit={handleAddPlaceSubmit}
             isLoading={submitButtonEffect}
           />
-          <ImagePopup card={selectedCard} onClose={closeAllPopups} />
+          <ImagePopup
+            card={selectedCard}
+            isOpen={isImagePopupOpen}
+            onClose={closeAllPopups}
+            name="imagePopup"
+          />
           <InfoToolTip
             isOpen={isInfoToolTipOpen}
             onClose={closeAllPopups}
             status={tooltipStatus}
+            name="tool-tip"
           />
           <Header
             isLoggedIn={isLoggedIn}

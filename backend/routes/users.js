@@ -11,11 +11,10 @@ const {
   updateUser,
 } = require('../controllers/users');
 
-router.post('/signup', createUser);
-router.post('/signin', login)
+
 router.get('/users', getAllUsers);
 router.get('/users/me', getUser);
-router.get('/user/:id', getUserById);
+router.get('/users/:id', getUserById);
 router.patch('/users/me', updateUser);
 router.patch('/users/me/avatar', updateAvatar);
 
