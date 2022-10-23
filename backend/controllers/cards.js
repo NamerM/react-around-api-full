@@ -45,7 +45,7 @@ const deleteCard = (req, res, next) => {
        next(new ForbiddenError('This is not your card to delete!'));
       } else {
         Card.findByIdAndRemove(cardId)
-          .then((card) => res.send(card))
+          .then((card) => res.send(card));
       }
     })
     .catch(next);

@@ -216,8 +216,7 @@ function App() {
   }
 
   function handleCardDelete(card) {
-    console.log(card);
-    // console.log(cards);
+    // console.log(card);
     setSubmitButtonEffect(true);
     api.deleteCard(card._id)
       .then((res) => {

@@ -7,7 +7,6 @@ const cors = require('cors');
 const { errors } = require('celebrate');
 const errorHandler = require('./middleware/errorHandler');
 const { logger, errorLogger } = require('./middleware/logger');
-// const auth = require('./middleware/auth');
 
 const allowedCors = {
   origin: [
@@ -30,7 +29,7 @@ app.use(cors(allowedCors));
 app.options('*', cors());
 
 app.use(logger);
-// app.use(auth);
+
 app.get('/crash-test', () => {
   setTimeout(() => {
     throw new Error('Server will crash now');
@@ -42,9 +41,6 @@ app.use('/', router);
 app.use(errorLogger);
 app.use(errors());
 app.use(errorHandler);
-// app.all('*', (req, res) => {
-//   res.status(404).send({ message: 'Requested resource not found' });
-// });
 
 app.listen(PORT, () => {
   console.log(`App is available  on port  ${PORT}...`);
