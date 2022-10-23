@@ -1,16 +1,15 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
-// const validator = require('validator');
-
-const { LINK_REGEXP, EMAIL_REGEXP } = require('../constants/index');
+const { LINK_REGEXP, EMAIL_REGEXP } = require('../utils/regex');
+const validator = require('validator');
 
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
     default: "Jacques Cousteau",
-    required:[ true, 'Name field can not be empty'],
-    minlength: [2, 'Minimum length of the name should be 2'],
-    maxlength: [30, 'Maximum lengt of the name should be 30'],
+    required: true,
+    minlength: 2,
+    maxlength: 30,
   },
   about: {
     type: String,
@@ -22,11 +21,9 @@ const userSchema = new mongoose.Schema({
   avatar: {
     type: String,
     default: "https://pictures.s3.yandex.net/resources/avatar_1604080799.jpg",
-    required: [true, 'Please enter valid image address to the field'],
+    required: true,
     validate: {
-      validator(v) {
-        return LINK_REGEXP.test(v);
-      },
+      validator: (v) => LINK_REGEXP.test(v),
       message: 'Enter a Valid Avatar address',
     },
   },
@@ -35,9 +32,7 @@ const userSchema = new mongoose.Schema({
     required: true,
     unique: true,
     validate: {
-      validator(v) {  // => validator.isEmail(v), curly brackets of
-        return EMAIL_REGEXP.test(v);
-      },
+      validator: (v)  => EMAIL_REGEXP.test(v),
       message: 'Enter a Valid E-Mail Address',
     },
   },

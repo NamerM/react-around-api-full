@@ -2,7 +2,6 @@ export const BASE_URL = "http://localhost:3001";
 
 //  "https://api.mnamer.students.nomoredomainssbs.ru"
 
-
 const checkFetch = (url, headers) => {
   return fetch(url, headers).then((res) =>
     res.ok ? res.json() : Promise.reject(res.StatusText)

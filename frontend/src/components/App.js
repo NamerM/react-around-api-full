@@ -104,15 +104,16 @@ function App() {
       const onRegisterUser = ({ email, password }) => {
         auth.signup(email, password)
           .then((res) => {
-            if(res) {  //res.data._id
+            if(res.data._id) {  //res.data._id
+              console.log(res.data._id);
               setTooltipStatus('success');
-              history.push('/signin')
+              history.push('/signin');
             } else {
               setTooltipStatus('fail');
             }
           })
           .catch((err) => {
-            // console.log("err =>", err);
+            console.log("err =>", err);
             setTooltipStatus('fail');
           })
           .finally(() => setIsInfoToolTipOpen(true))

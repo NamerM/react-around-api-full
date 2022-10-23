@@ -9,7 +9,6 @@ class Api {
     return res.ok ? res.json() : Promise.reject(res.StatusText)
   }
 
-
   getUserInfo() {
     return fetch(`${this._baseUrl}/users/me`, {
       headers: {
@@ -101,7 +100,7 @@ class Api {
 }
 
 const api = new Api({
-  baseUrl: 'http://localhost:3001',  // https://api.mnamer.students.nomoredomainssbs.ru"
+  baseUrl: 'http://localhost:3001',
   headers: {
     authorization: `Bearer ${localStorage.getItem('jwt')}`,
     "Content-Type": "application/json"

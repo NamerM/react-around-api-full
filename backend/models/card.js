@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const { LINK_REGEXP } = require('../constants/index');
+const { LINK_REGEXP } = require('../utils/regex');
 
 const cardSchema = new mongoose.Schema({
   name: {

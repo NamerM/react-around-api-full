@@ -43,9 +43,10 @@ const createUser = (req, res, next) => {
       }
     })
     .then((hash) =>  User.create({
-      name, avatar, about, email, password: hash,
+      name, avatar, about, email,
+      password: hash,
     }))
-    .then((users) => res.status(201).send({ data: users })) // send({ users })
+    .then((user) => res.status(201).send({ data: user })) // send({ users })
     .catch((err) => {
       if (err.name === 'ValidationError') {
         res.status(400).send({ message: 'Bad Request' });//next(new BadRequestError(`${Object.values(err.errors).map((error) => error.message).join(', ')}`));

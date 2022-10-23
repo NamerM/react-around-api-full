@@ -27,17 +27,17 @@ app.use(helmet());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors(allowedCors));
-app.options('*'), cors();
+app.options('*', cors());
 
 app.use(logger);
 // app.use(auth);
-app.use('/', router);
-
 app.get('/crash-test', () => {
   setTimeout(() => {
     throw new Error('Server will crash now');
   }, 0);
 });
+
+app.use('/', router);
 
 app.use(errorLogger);
 app.use(errors());
