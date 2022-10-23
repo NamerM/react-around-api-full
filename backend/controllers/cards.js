@@ -27,7 +27,7 @@ const createCard = (req, res, next) => {
       if (err.name === 'ValidationError') {
         next(new BadRequestError(err.message));
       } else if (err.status === 500) {
-        res.status(500).send({ message: 'Internal Server Error ...' });
+        next(new errorHandler('Internal Server Error ...'));
       } else {
         next(err);
       }
