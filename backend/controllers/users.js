@@ -4,31 +4,21 @@ const User = require('../models/user');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const logger = require('../../frontend/src/utils/logger');
-
-const castError = (req, res, err) => {
-  if (err.name === 'CastError') {
-    res.status(400).send('Invalid Id Format');
-  } else if (err.status === 404) {
-    res.status(404).send({ message: err.message });
-  } else {
-    res.status(500).send({ message: 'Internal Server Error ...' });
-  }
-};
+const ExistingError = require('../errors/ExistingError');
+const BadRequestError = require('../errors/BadRequestError');
+const UnauthorizedError = require('../errors/UnauthorizedError');
+const errorHandler = require('../middleware/errorhandler');
+const NotFoundError = require('../errors/NotFoundError');
 
 const login = (req, res, next) => {
   const { email, password } = req.body;
   return User.findUserByCredentials(email, password)
     .then((user) => {
       const token = jwt.sign({ _id: user._id }, JWT_SECRET, { expiresIn: '7d'});
-      res.send({ data: user.toJSON(), token })    // res.status(200).send(token);
+      res.send({ data: user.toJSON(), token })
     })
-    .catch((err) => {
-      console.log("err", err);
-      if (err.status === 401) {
-        res.status(401).send({ message: 'Incorrect email or password, please check and try again'});  //new UnauthorizedError //next(new Error('Login information is incorrect, check either email or password'));
-      } else {
-        next(err);
-      }
+    .catch(() => {
+        next(new UnauthorizedError('Login information is incorrect, check either email or password'));
     })
 }
 
@@ -37,7 +27,7 @@ const createUser = (req, res, next) => {
   User.findOne({ email })
     .then((user) => {
       if(user) {
-        throw new Error('Current Email has already been registered');  // throw new ErrorRepetitionMail
+        throw new ExistingError('Current Email has already been registered');
       } else {
         return bcrypt.hash(password, 10);
       }
@@ -46,12 +36,12 @@ const createUser = (req, res, next) => {
       name, avatar, about, email,
       password: hash,
     }))
-    .then((user) => res.status(201).send({ data: user })) // send({ users })
+    .then((user) => res.status(201).send({ data: user }))
     .catch((err) => {
-      if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Bad Request' });//next(new BadRequestError(`${Object.values(err.errors).map((error) => error.message).join(', ')}`));
-      } else if(err.status === 500) {
-        res.status(500).send({ message: 'Internal Server Error ...' });
+      if(err.name === 'ValidationError') {
+       next(new BadRequestError(err.message));
+      // } else if(err.status === 500) {
+      //   next(errorHandler(err.message));
       } else {
         next(err);
       }
@@ -61,27 +51,22 @@ const createUser = (req, res, next) => {
 const getAllUsers = (req, res, next) => {
   User.find({})
     .then((users) => res.status(200).send({ data: users }))
-    .catch(next);
-    // .catch(() => res.status(500).send({ message: 'An error has occured, server side' }));
+    .catch(next)
 };
 
-const getUser = (req, res) => {
+const getUser = (req, res, next) => {
   const id = req.user._id;
   User.findById(id)
     .orFail(() => {
-      const error = new Error('User id is not found');
-      error.status = 404;
-      throw error;
+      throw new NotFound('Requested page not found');
     })
     .then((user) => {
       res.status(200).send({ data: user });
     })
-    .catch((err) => {
-      castError(req, res, err);
-    });
+    .catch(next)
 };
 
-const updateUserData = (req, res) => {
+const updateUserData = (req, res, next) => {
   const { body } = req;
   const id = req.user._id;
 
@@ -91,16 +76,12 @@ const updateUserData = (req, res) => {
     { new: true, runValidators: true }
   )
     .orFail(() => {
-      const error = new Error('User Id is not found');
-      error.status = 404;
-
-      throw error;
+      throw new NotFoundError('Please update user info fields')
     })
     .then((user) => res.send({ data: user }))
-    .catch((err) => {
-      castError(req, res, err);
-    });
+    .catch(next)
 };
+
 const updateAvatar = (req, res, next) => {
   const avatar = req.body.avatar;
   User.findByIdAndUpdate(
@@ -119,7 +100,7 @@ const updateUser = (req, res) => {
   const { name, about } = req.body;
 
   if (!name || !about) {
-    return res.status(400).send({ message: ' Can\'t leave the field empty!' });
+    throw new BadRequestError('Please update Avatar');
   }
   return updateUserData(req, res);
 };
@@ -129,7 +110,7 @@ const getUserById = (req, res, next) => {
     logger("req.user._id =>", req.user._id)
     .then((user) => {
       if (!user) {
-        throw new Error('Bad Request');
+        throw new BadRequestError('Bad Request');
       }
       return res.status(200).send({ data: user });
     })

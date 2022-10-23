@@ -30,20 +30,20 @@ const validateURL = (value, helpers) => {
 //user info validation
 const validateUserBody = celebrate({
   body: Joi.object().keys({
-    name: Joi.string().required().min(2).max(30)
-      .messages({
-        'string.min': 'The minimum length of the "name" field is 2',
-        'string.max': 'The maximum length of the "name" field is 30',
-        'string.empty': 'The "name" field can not be left empty',
-      }),
-    about: Joi.string().required().min(2).max(30)
-      .messages({
-        'string.min': 'The minimum length of the "name" field is 2',
-        'string.max': 'The maximum length of the "name" field is 30',
-        'string.empty': 'The "about" field can not be left empty',
-      }),
-    avatar: Joi.string().required().custom(validateURL)
-      .message('The "avatar" address field must be filled'),
+    // name: Joi.string().required().min(2).max(30)
+    //   .messages({
+    //     'string.min': 'The minimum length of the "name" field is 2',
+    //     'string.max': 'The maximum length of the "name" field is 30',
+    //     'string.empty': 'The "name" field can not be left empty',
+    //   }),
+    // about: Joi.string().required().min(2).max(30)
+    //   .messages({
+    //     'string.min': 'The minimum length of the "name" field is 2',
+    //     'string.max': 'The maximum length of the "name" field is 30',
+    //     'string.empty': 'The "about" field can not be left empty',
+    //   }),
+    // avatar: Joi.string().required().custom(validateURL)
+    //   .message('The "avatar" address field must be filled'),
     email: Joi.string().required().email()
       .message('The "email" field must be a valid email')
       .messages({
@@ -52,7 +52,7 @@ const validateUserBody = celebrate({
       }),
     password: Joi.string().required().min(6)
       .messages({
-        'string.empty': 'The "password" field must be filled',
+        'string.required': 'The "password" field must be filled',
         'string.min': 'The Password must be at least 6 characters long',
       }),
   }),

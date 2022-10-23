@@ -1,9 +1,15 @@
 const Card = require('../models/card');
+const ExistingError = require('../errors/ExistingError');
+const BadRequestError = require('../errors/BadRequestError');
+const UnauthorizedError = require('../errors/UnauthorizedError');
+const ForbiddenError = require('../errors/ForbiddenError');
+const errorHandler = require('../middleware/errorhandler');
+const NotFoundError = require('../errors/NotFoundError');
 
 const getAllCards = (req, res) => {
   Card.find({})
     .then((cards) => res.status(200).send({ data: cards }))
-    .catch(() => res.status(500).send({ message: 'An error has occured, server side' }));
+    .catch(errorHandler);
 };
 
 const createCard = (req, res, next) => {
@@ -19,7 +25,7 @@ const createCard = (req, res, next) => {
     .catch((err) => {
       logger(err);
       if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Bad Request, Invalid data format' });
+        next(new BadRequestError(err.message));
       } else if (err.status === 500) {
         res.status(500).send({ message: 'Internal Server Error ...' });
       } else {
@@ -32,30 +38,17 @@ const deleteCard = (req, res, next) => {
   const { cardId } = req.params;
   Card.findById(cardId)
     .orFail(() => {
-      const error = new Error('Card not found');
-      error.status = 404;
-      throw error;
+      throw new NotFoundError('Card Not Found!');
     })
     .then((card) => {
       if(!card.owner.equals(req.user._id)) {
-        res.status(401).send({ message: 'This is not your card to delete!'});
+       next(new ForbiddenError('This is not your card to delete!'));
       } else {
         Card.findByIdAndRemove(cardId)
           .then((card) => res.send(card))
       }
     })
-    // .then((card) => res.status(200).send({ message: 'Card successfully removed', data: card }))
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        res.status(400).send({ message: 'Bad Request, Invalid data format' });
-      } else if (err.status === 404) {
-        res.status(404).send({ message: err.message });
-      } else if (err.status === 500) {
-        res.status(500).send({ message: 'Internal Server Error ...' });
-      } else {
-        next(err);
-      }
-    });
+    .catch(next);
 };
 
 const updateLikes = (req, res, next, operator) => {
@@ -68,19 +61,16 @@ const updateLikes = (req, res, next, operator) => {
     { new: true },
   )
     .orFail(() => {
-      const error = new Error('Card Id is not found');
-      error.status = 404;
-
-      throw error;
+      throw new NotFoundError('Card Id is not found');
     })
     .then((CARD) => res.send({ data: CARD }))
     .catch((err) => {
       if (err.name === 'Cast Error') {
-        res.status(400).send({ message: 'Card Id is not correct' });
+        next(new ForbiddenError('Card Id is not correct'));
       } else if (err.status === 404) {
-        res.status(404).send({ message: err.message });
+        next(new NotFoundError(err.message));
       } else if (err.status === 500) {
-        res.status(500).send({ message: 'Ooopsss Mulder something went wrong...' });
+        next(new errorHandler('Ooopsss Mulder something went wrong...'))
       } else {
         next(err);
       }
