@@ -100,9 +100,8 @@ class Api {
   }
 }
 
-
 const api = new Api({
-  baseUrl: 'http://localhost:3001',
+  baseUrl: 'http://localhost:3001',  // https://api.mnamer.students.nomoredomainssbs.ru"
   headers: {
     authorization: `Bearer ${localStorage.getItem('jwt')}`,
     "Content-Type": "application/json"
