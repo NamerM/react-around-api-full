@@ -2,10 +2,12 @@ require('dotenv').config({ path: './.env' });
 console.log(process.env.NODE_ENV);
 const express = require('express');
 const mongoose = require('mongoose');
-const cors = require('cors');
 const helmet = require('helmet');
-const { login, createUser } = require('./controllers/users');
-const auth = require('./middleware/auth');
+const cors = require('cors');
+const { errors } = require('celebrate');
+const errorHandler = require('./middleware/errorHandler');
+const { logger, errorLogger } = require('./middleware/logger');
+// const auth = require('./middleware/auth');
 
 const allowedCors = {
   origin: [
@@ -27,17 +29,23 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors(allowedCors));
 app.options('*'), cors();
 
-app.post('/signin', login);
-app.post('/signup', createUser);
-
-app.use(auth);
+app.use(logger);
+// app.use(auth);
 app.use('/', router);
 
-
-app.all('*', (req, res) => {
-  res.status(404).send({ message: 'Requested resource not found' });
+app.get('/crash-test', () => {
+  setTimeout(() => {
+    throw new Error('Server will crash now');
+  }, 0);
 });
+
+app.use(errorLogger);
+app.use(errors());
+app.use(errorHandler);
+// app.all('*', (req, res) => {
+//   res.status(404).send({ message: 'Requested resource not found' });
+// });
 
 app.listen(PORT, () => {
   console.log(`App is available  on port  ${PORT}...`);
-});
+})
