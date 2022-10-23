@@ -84,7 +84,11 @@ const updateUserData = (req, res) => {
   const { body } = req;
   const id = req.user._id;
 
-  User.findByIdAndUpdate(id, body, { new: true, runValidators: true })
+  User.findByIdAndUpdate(
+    id,
+    body,
+    { new: true, runValidators: true }
+  )
     .orFail(() => {
       const error = new Error('User Id is not found');
       error.status = 404;
@@ -109,16 +113,6 @@ const updateAvatar = (req, res, next) => {
     .then((user) => res.status(200).send(user))
     .catch(next);
 };
-
-// const updateAvatar = (req, res) => {
-//   const avatar = req.body.avatar;
-
-//   if (!avatar) {
-//     return res
-//       .status(400).send({ message: 'Avatar should have inputs! - Can\'t leave avatar empty!' });
-//   }
-//   return updateUserData(req, res);
-// };
 
 const updateUser = (req, res) => {
   const { name, about } = req.body;

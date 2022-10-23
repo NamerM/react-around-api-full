@@ -41,11 +41,3 @@ app.all('*', (req, res) => {
 app.listen(PORT, () => {
   console.log(`App is available  on port  ${PORT}...`);
 });
-
-// not needed
-// app.use((req, res, next) => {
-//   req.user = {
-//     _id: '631f220c1e56c98bfdc2f492',
-//   };
-//   next();
-// });
