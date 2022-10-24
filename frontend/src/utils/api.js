@@ -99,15 +99,17 @@ class Api {
   }
 }
 
-let node_env = "production";
+// let NODE_ENV = "production";
 
-let baseUrl =
-  node_env === "production"
-    ? "https://api.mnamer.students.nomoredomainssbs.ru"
-    : "http://localhost:3001";
+// let baseUrl =
+//   NODE_ENV === "production"
+//     ? "https://api.mnamer.students.nomoredomainssbs.ru"
+//     : "http://localhost:3000"
+
+//  baseUrl : "http://localhost:3001",
 
 const api = new Api({
-  baseUrl,
+  baseUrl: "https://api.mnamer.students.nomoredomainssbs.ru",
   headers: {
     authorization: `Bearer ${localStorage.getItem('jwt')}`,
     "Content-Type": "application/json"
