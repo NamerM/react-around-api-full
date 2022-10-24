@@ -22,3 +22,4 @@ router.patch('/users/me/avatar', validateAvatar ,updateAvatar);
 module.exports = {
   userRouter: router,
 };
+//
