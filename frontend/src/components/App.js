@@ -95,7 +95,7 @@ function App() {
             }
           })
           .catch((err)=> {
-            console.log("err =>", err);
+            // console.log("err =>", err);
             setTooltipStatus('fail');
             setIsInfoToolTipOpen(true);
           })

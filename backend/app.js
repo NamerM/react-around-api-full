@@ -1,9 +1,9 @@
-require('dotenv').config({ path: './.env' });
+require('dotenv').config({ path: './env' });
 console.log(process.env.NODE_ENV);
 const express = require('express');
 const mongoose = require('mongoose');
-const helmet = require('helmet');
 const cors = require('cors');
+const helmet = require('helmet');
 const { errors } = require('celebrate');
 const errorHandler = require('./middleware/errorHandler');
 const { logger, errorLogger } = require('./middleware/logger');

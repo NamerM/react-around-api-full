@@ -6,7 +6,6 @@ const jwt = require('jsonwebtoken');
 const ExistingError = require('../errors/ExistingError');
 const BadRequestError = require('../errors/BadRequestError');
 const UnauthorizedError = require('../errors/UnauthorizedError');
-const errorHandler = require('../middleware/errorhandler');
 const NotFoundError = require('../errors/NotFoundError');
 
 const login = (req, res, next) => {
@@ -17,7 +16,7 @@ const login = (req, res, next) => {
       res.send({ data: user.toJSON(), token })
     })
     .catch(() => {
-        next(new UnauthorizedError('Login information is incorrect, check either email or password'));
+        next(new UnauthorizedError('Login information is incorrect, check either email or password'))
     })
 }
 
@@ -49,7 +48,7 @@ const createUser = (req, res, next) => {
 
 const getAllUsers = (req, res, next) => {
   User.find({})
-    .then((users) => res.status(200).send({ data: users }))
+    .then((users) => res.status(200).send({ data: users }))   //.send(users))
     .catch(next)
 };
 
@@ -124,5 +123,4 @@ module.exports = {
   updateAvatar,
   updateUser,
   getUserById,
-};
-//com
+}

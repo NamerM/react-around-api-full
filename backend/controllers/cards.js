@@ -3,13 +3,16 @@ const ExistingError = require('../errors/ExistingError');
 const BadRequestError = require('../errors/BadRequestError');
 const UnauthorizedError = require('../errors/UnauthorizedError');
 const ForbiddenError = require('../errors/ForbiddenError');
-const errorHandler = require('../middleware/errorhandler');
+const errorHandler = require('../middleware/errorHandler');
 const NotFoundError = require('../errors/NotFoundError');
 
 const getAllCards = (req, res) => {
   Card.find({})
+
     .then((cards) => res.status(200).send({ data: cards }))
-    .catch(errorHandler);
+    .catch((err) => {
+      next(err);
+    });
 };
 
 const createCard = (req, res, next) => {
@@ -23,11 +26,8 @@ const createCard = (req, res, next) => {
   })
     .then((card) => res.status(201).send({ data: card }))
     .catch((err) => {
-      logger(err);
       if (err.name === 'ValidationError') {
         next(new BadRequestError(err.message));
-      } else if (err.status === 500) {
-        next(new errorHandler('Internal Server Error ...'));
       } else {
         next(err);
       }
@@ -64,17 +64,18 @@ const updateLikes = (req, res, next, operator) => {
       throw new NotFoundError('Card Id is not found');
     })
     .then((CARD) => res.send({ data: CARD }))
-    .catch((err) => {
-      if (err.name === 'Cast Error') {
-        next(new ForbiddenError('Card Id is not correct'));
-      } else if (err.status === 404) {
-        next(new NotFoundError(err.message));
-      } else if (err.status === 500) {
-        next(new errorHandler('Ooopsss Mulder something went wrong...'))
-      } else {
-        next(err);
-      }
-    });
+    .catch(next);
+    // .catch((err) => {
+    //   // if (err.name === 'Cast Error') {
+    //   //   next(new ForbiddenError('Card Id is not correct'));
+    //   // } else if (err.status === 404) {
+    //   //   next(new NotFoundError(err.message));
+    //   // } else if (err.status === 500) {
+    //   //   next(new errorHandler('Ooopsss Mulder something went wrong...'))
+    //   // } else {
+    //   //   next(err);
+    //   // }
+    // });
 };
 
 const likeCard = (req, res, next) => updateLikes(req, res, next, '$addToSet');

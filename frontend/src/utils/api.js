@@ -99,13 +99,6 @@ class Api {
   }
 }
 
-// let NODE_ENV = "production";
-
-// let baseUrl =
-//   NODE_ENV === "production"
-//     ? "https://api.mnamer.students.nomoredomainssbs.ru"
-//     : "http://localhost:3000"
-
 //  baseUrl : "http://localhost:3001",
 
 const api = new Api({
