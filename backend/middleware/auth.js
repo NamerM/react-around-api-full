@@ -1,12 +1,7 @@
 require('dotenv').config();
 const jwt = require('jsonwebtoken');
-const { JWT_SECRET } = process.env;
-// const { JWT_SECRET ='4f69cb2460f1788cead4a48228074076321547fc8a29f12da7e7dd8087be6422' } = process.env;
+const { JWT_SECRET = 'secret-key' } = process.env;
 const UnauthorizedError = require('../errors/UnauthorizedError')
-
-// const errorAuth = (res) => {
-//   res.status(401).send({ message: 'Authorization Required'});
-// }
 
 const auth = (req, res, next) => {
   const { authorization } = req.headers;

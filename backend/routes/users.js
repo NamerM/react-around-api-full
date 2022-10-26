@@ -11,12 +11,10 @@ const {
   validateProfile,
   validateAvatar,
   validateObjectId,
-  validateUserBody,
 } = require('../middleware/validators');
 
 router.get('/users/', getAllUsers);
 router.get('/users/me', getUser);
-router.get('/users/:id', validateObjectId, getUserById);
 router.patch('/users/me', validateProfile, updateUser);
 router.patch('/users/me/avatar', validateAvatar ,updateAvatar);
 
