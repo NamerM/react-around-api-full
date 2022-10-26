@@ -1,4 +1,5 @@
 require('dotenv').config({ path: './env' });
+console.log(process.env.NODE_ENV);
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
@@ -18,7 +19,7 @@ const allowedCors = {
 
 const app = express();
 const { PORT = 3001 } = process.env;
-const { router } = require('./routes');
+const router = require('./routes');
 
 mongoose.connect('mongodb://localhost:27017/aroundb');
 
@@ -28,6 +29,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors(allowedCors));
 app.options('*', cors());
 
+app.use(limiter);
 app.use(logger);
 
 app.get('/crash-test', () => {
