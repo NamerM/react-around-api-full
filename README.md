@@ -1,4 +1,4 @@
-## SPRINT 15 PROJECT LOG
+## SPRINT 15 REACT-AROUND-API-FULL
 The API of "Around the U.S." with authorization and registration handled by the back-end server.
 
 This repository contains the full API of "Around the U.S." project that features user authorization and user registration and handles cards and users. Please add to this readme:
@@ -30,3 +30,6 @@ This project is the first implementation for VM usage on cloud as a server, host
 
 VM practices provided with the project. On the VM , frontend had nginx usage. With setting domains in the config file we had our domain name hosted on the cloud. Files built on Frontend with scp command on local bash (by SSH handshake) and the Backend had files with git pull.
 With all of this the difficulties were a hard learning experiences.
+
+http://mnamer.students.nomoredomainssbs.ru // api.mnamer.students.nomoredaminssbs.ru - where you can find my project.
+A video cover will be added to Linkedin shortly after fixes
