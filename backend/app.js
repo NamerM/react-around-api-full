@@ -19,7 +19,7 @@ const allowedCors = {
 
 const app = express();
 const { PORT = 3001 } = process.env;
-const router = require('./routes');
+const { router } = require('./routes');
 
 mongoose.connect('mongodb://localhost:27017/aroundb');
 
