@@ -12,6 +12,7 @@ router.post('/signin', validateAuthentication, login);
 router.use(auth);
 router.use('/', userRouter);
 router.use('/', cardRouter);
+router.use('*', nonExisted);
 
 module.exports = {
   router,

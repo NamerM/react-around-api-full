@@ -6,12 +6,13 @@ const {
   updateAvatar,
   updateUser,
 } = require('../controllers/users');
+
 const {
   validateProfile,
   validateAvatar,
   validateObjectId,
+  validateUserBody,
 } = require('../middleware/validators');
-
 
 router.get('/users/', getAllUsers);
 router.get('/users/me', getUser);
