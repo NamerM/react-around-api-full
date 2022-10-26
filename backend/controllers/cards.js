@@ -65,17 +65,6 @@ const updateLikes = (req, res, next, operator) => {
     })
     .then((CARD) => res.send({ data: CARD }))
     .catch(next);
-    // .catch((err) => {
-    //   // if (err.name === 'Cast Error') {
-    //   //   next(new ForbiddenError('Card Id is not correct'));
-    //   // } else if (err.status === 404) {
-    //   //   next(new NotFoundError(err.message));
-    //   // } else if (err.status === 500) {
-    //   //   next(new errorHandler('Ooopsss Mulder something went wrong...'))
-    //   // } else {
-    //   //   next(err);
-    //   // }
-    // });
 };
 
 const likeCard = (req, res, next) => updateLikes(req, res, next, '$addToSet');
@@ -89,4 +78,3 @@ module.exports = {
   likeCard,
   dislikeCard,
 };
-//com

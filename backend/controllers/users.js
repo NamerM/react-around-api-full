@@ -38,8 +38,6 @@ const createUser = (req, res, next) => {
     .catch((err) => {
       if(err.name === 'ValidationError') {
        next(new BadRequestError(err.message));
-      // } else if(err.status === 500) {
-      //   next(errorHandler(err.message));
       } else {
         next(err);
       }
@@ -105,10 +103,9 @@ const updateUser = (req, res) => {
 
 const getUserById = (req, res, next) => {
   User.findById(req.user._id)
-    console.log("req.user._id =>", req.user._id)
     .then((user) => {
       if (!user) {
-        throw new BadRequestError('Bad Request');
+        throw new NotFoundError('User Not Found');
       }
       return res.status(200).send({ data: user });
     })
