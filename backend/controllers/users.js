@@ -1,4 +1,4 @@
-require('dotenv').config({ path: './env' });
+require('dotenv').config({ path: '../../.env' });
 
 const { JWT_SECRET } = process.env;
 const bcrypt = require('bcrypt');
