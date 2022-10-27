@@ -20,7 +20,7 @@ class Api {
   }
 
   editProfile = ({ name, about }) => {
-    console.log(`name:${name} and it's about:${about}`);
+  //   console.log(`name:${name} and it's about:${about}`);
     return fetch(`${this._baseUrl}/users/me`, {
       method: "PATCH",
       headers: {
@@ -36,7 +36,7 @@ class Api {
   }
 
   editAvatar(avatar) {
-    console.log(avatar);
+    // console.log(avatar);
     return fetch(`${this._baseUrl}/users/me/avatar`, {
       method: "PATCH",
       headers: {
@@ -74,7 +74,7 @@ class Api {
 
   cardLikeStatusChange = (id, isLiked) => {
     const method = isLiked ? "DELETE" : "PUT";
-    console.log(id, isLiked);
+    // console.log(id, isLiked);
     // console.log(method);
     return fetch(`${this._baseUrl}/cards/${id}/likes`, {
     headers: {

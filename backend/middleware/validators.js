@@ -30,20 +30,6 @@ const validateURL = (value, helpers) => {
 //user info validation
 const validateUserBody = celebrate({
   body: Joi.object().keys({
-    // name: Joi.string().required().min(2).max(30)
-    //   .messages({
-    //     'string.min': 'The minimum length of the "name" field is 2',
-    //     'string.max': 'The maximum length of the "name" field is 30',
-    //     'string.empty': 'The "name" field can not be left empty',
-    //   }),
-    // about: Joi.string().required().min(2).max(30)
-    //   .messages({
-    //     'string.min': 'The minimum length of the "name" field is 2',
-    //     'string.max': 'The maximum length of the "name" field is 30',
-    //     'string.empty': 'The "about" field can not be left empty',
-    //   }),
-    // avatar: Joi.string().required().custom(validateURL)
-    //   .message('The "avatar" address field must be filled'),
     email: Joi.string().required().email()
       .message('The "email" field must be a valid email')
       .messages({
@@ -96,6 +82,18 @@ const validateObjectId = celebrate({
   }),
 });
 
+//Validateuser Id?
+const validateUserId = celebrate({
+  params: Joi.object().keys({
+  id: Joi.string().required().custom((value, helpers) => {
+      if (ObjectId.isValid(value)) {
+        return value;
+      }
+      return helpers.message('Invalid Id');
+    }),
+  }),
+});
+
 //validate cards
 const validateCardBody = celebrate({
   body: Joi.object().keys({
@@ -120,5 +118,5 @@ module.exports = {
   validateUserBody,
   validateObjectId,
   validateCardBody,
+  validateUserId,
 }
-//

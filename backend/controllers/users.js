@@ -1,4 +1,4 @@
-require('dotenv').config();
+require('dotenv').config({ path: './env' });
 const { NODE_ENV, JWT_SECRET } = process.env;
 const User = require('../models/user');
 const bcrypt = require('bcrypt');
@@ -102,7 +102,7 @@ const updateUser = (req, res) => {
 };
 
 const getUserById = (req, res, next) => {
-  User.findById(req.user._id)
+  User.findById(req.params.id)
     .then((user) => {
       if (!user) {
         throw new NotFoundError('User Not Found');

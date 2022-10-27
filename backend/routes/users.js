@@ -10,7 +10,7 @@ const {
 const {
   validateProfile,
   validateAvatar,
-  validateObjectId,
+  validateObjectId
 } = require('../middleware/validators');
 
 router.get('/users/', getAllUsers);

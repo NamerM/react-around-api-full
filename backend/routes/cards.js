@@ -20,4 +20,3 @@ router.delete('/cards/:cardId/likes', validateObjectId, dislikeCard);
 module.exports = {
   cardRouter: router,
 };
-//
