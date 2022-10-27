@@ -1,12 +1,9 @@
 const Card = require('../models/card');
-const ExistingError = require('../errors/ExistingError');
 const BadRequestError = require('../errors/BadRequestError');
-const UnauthorizedError = require('../errors/UnauthorizedError');
 const ForbiddenError = require('../errors/ForbiddenError');
-const errorHandler = require('../middleware/errorHandler');
 const NotFoundError = require('../errors/NotFoundError');
 
-const getAllCards = (req, res) => {
+const getAllCards = (req, res, next) => {
   Card.find({})
 
     .then((cards) => res.status(200).send({ data: cards }))
@@ -22,7 +19,7 @@ const createCard = (req, res, next) => {
   Card.create({
     name,
     link,
-    owner,  //likes removed
+    owner, // likes removed
   })
     .then((card) => res.status(201).send({ data: card }))
     .catch((err) => {
@@ -41,11 +38,11 @@ const deleteCard = (req, res, next) => {
       throw new NotFoundError('Card Not Found!');
     })
     .then((card) => {
-      if(!card.owner.equals(req.user._id)) {
-       next(new ForbiddenError('This is not your card to delete!'));
+      if (!card.owner.equals(req.user._id)) {
+        next(new ForbiddenError('This is not your card to delete!'));
       } else {
         Card.findByIdAndRemove(cardId)
-          .then((card) => res.send(card));
+          .then((deletecard) => res.send(deletecard));
       }
     })
     .catch(next);

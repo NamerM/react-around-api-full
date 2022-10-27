@@ -1,11 +1,11 @@
-require('dotenv').config({ path: './env' });
-console.log(process.env.NODE_ENV);
+require('dotenv').config({ path: '../.env' });
+// console.log(process.env.NODE_ENV);
 const express = require('express');
 const mongoose = require('mongoose');
-const { MONGO_URL } =require('./utils/config');
 const cors = require('cors');
 const helmet = require('helmet');
 const { errors } = require('celebrate');
+const { MONGO_URL } = require('./utils/config');
 const errorHandler = require('./middleware/errorHandler');
 const { logger, errorLogger } = require('./middleware/logger');
 const { limiter } = require('./middleware/limiter');
@@ -15,11 +15,11 @@ const allowedCors = {
     'http://localhost:3000',
     'http://localhost:3001',
     'https://mnamer.students.nomoredomainssbs.ru',
-  ]
-}
+  ],
+};
 
 const app = express();
-const { PORT = 3001, MONGO_URL} = process.env;
+const { PORT = 3001 } = process.env;
 const { router } = require('./routes');
 
 mongoose.connect(MONGO_URL);
@@ -47,5 +47,5 @@ app.use(errorHandler);
 
 app.listen(PORT, () => {
   console.log(`App is available  on port  ${PORT}...`);
-})
+});
 //

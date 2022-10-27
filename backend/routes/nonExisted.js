@@ -6,5 +6,5 @@ router.use((res, req, next) => {
 });
 
 module.exports = {
-  nonExisted : router,
+  nonExisted: router,
 };

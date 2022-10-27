@@ -2,7 +2,7 @@ const { Joi, celebrate } = require('celebrate');
 const validator = require('validator');
 const { ObjectId } = require('mongoose').Types;
 
-//login validation
+// login validation
 const validateAuthentication = celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email()
@@ -16,10 +16,10 @@ const validateAuthentication = celebrate({
         'string.empty': 'The "password" field must be filled',
         'string.min': 'The Password must be at least 6 characters long',
       }),
-  })
-})
+  }),
+});
 
-//url validation
+// url validation
 const validateURL = (value, helpers) => {
   if (validator.isURL(value)) {
     return value;
@@ -27,7 +27,7 @@ const validateURL = (value, helpers) => {
   return helpers.error('string.uri');
 };
 
-//user info validation
+// user info validation
 const validateUserBody = celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email()
@@ -42,35 +42,35 @@ const validateUserBody = celebrate({
         'string.min': 'The Password must be at least 6 characters long',
       }),
   }),
-})
+});
 
-//Validate Profile
-const validateProfile = celebrate ({
+// Validate Profile
+const validateProfile = celebrate({
   body: Joi.object().keys({
     name: Joi.string().required().min(2).max(30)
-    .messages({
-      'string.min': 'The minimum length of the "name" field is 2',
-      'string.max': 'The maximum length of the "name" field is 30',
-      'string.empty': 'The "name" field can not be left empty',
-    }),
-  about: Joi.string().required().min(2).max(30)
-    .messages({
-      'string.min': 'The minimum length of the "name" field is 2',
-      'string.max': 'The maximum length of the "name" field is 30',
-      'string.empty': 'The "about" field can not be left empty',
-    }),
+      .messages({
+        'string.min': 'The minimum length of the "name" field is 2',
+        'string.max': 'The maximum length of the "name" field is 30',
+        'string.empty': 'The "name" field can not be left empty',
+      }),
+    about: Joi.string().required().min(2).max(30)
+      .messages({
+        'string.min': 'The minimum length of the "name" field is 2',
+        'string.max': 'The maximum length of the "name" field is 30',
+        'string.empty': 'The "about" field can not be left empty',
+      }),
   }),
-})
+});
 
-//Validate Avatar
-const validateAvatar = celebrate ({
+// Validate Avatar
+const validateAvatar = celebrate({
   body: Joi.object().keys({
     avatar: Joi.string().required().custom(validateURL)
-    .message('The "avatar" address field must be filled'),
-  })
-})
+      .message('The "avatar" address field must be filled'),
+  }),
+});
 
-//Validate card Id?
+// Validate card Id?
 const validateObjectId = celebrate({
   params: Joi.object().keys({
     cardId: Joi.string().required().custom((value, helpers) => {
@@ -82,10 +82,10 @@ const validateObjectId = celebrate({
   }),
 });
 
-//Validateuser Id?
+// Validateuser Id?
 const validateUserId = celebrate({
   params: Joi.object().keys({
-  id: Joi.string().required().custom((value, helpers) => {
+    id: Joi.string().required().custom((value, helpers) => {
       if (ObjectId.isValid(value)) {
         return value;
       }
@@ -94,7 +94,7 @@ const validateUserId = celebrate({
   }),
 });
 
-//validate cards
+// validate cards
 const validateCardBody = celebrate({
   body: Joi.object().keys({
     name: Joi.string().required().min(2).max(30)
@@ -109,7 +109,7 @@ const validateCardBody = celebrate({
         'string.empty': '"Link" field can not be left empty',
       }),
   }),
-})
+});
 
 module.exports = {
   validateAuthentication,
@@ -119,4 +119,4 @@ module.exports = {
   validateObjectId,
   validateCardBody,
   validateUserId,
-}
+};
